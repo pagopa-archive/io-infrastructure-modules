@@ -45,6 +45,11 @@ variable "add_security_group" {
   default     = false
 }
 
+variable "azurerm_network_security_rules" {
+  type        = "list"
+  description = "The list of network security rules."
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
