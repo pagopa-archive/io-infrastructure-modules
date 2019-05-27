@@ -1,0 +1,53 @@
+# Existing infrastructure
+
+data "azurerm_resource_group" "rg" {
+  name = "${local.azurerm_resource_group_name}"
+}
+
+data "azurerm_virtual_network" "vnet" {
+  name                = "${local.azurerm_virtual_network_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+data "azurerm_network_security_group" "security_group" {
+  name                = "${local.azurerm_network_security_group_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+# New infrastructure
+
+resource "azurerm_route_table" "route_table" {
+  count               = "${var.add_route_table ? 1 : 0}"
+  name                = "${local.azurerm_route_table_name}"
+  location            = "${data.azurerm_resource_group.rg.location}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+resource "azurerm_route" "route" {
+  count               = "${length(var.azurerm_routes)}"
+  name                = "${lookup(var.azurerm_routes[count.index], "name")}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  route_table_name    = "${azurerm_route_table.route_table.name}"
+  address_prefix      = "${lookup(var.azurerm_routes[count.index], "address_prefix")}"
+  next_hop_type       = "${lookup(var.azurerm_routes[count.index], "next_hop_type")}"
+}
+
+resource "azurerm_subnet" "subnet" {
+  name                 = "${local.azurerm_subnet_name}"
+  resource_group_name  = "${data.azurerm_resource_group.rg.name}"
+  address_prefix       = "${var.azurerm_subnet_address_prefix}"
+  virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
+  service_endpoints    = "${var.azurerm_subnet_service_endpoints}"
+}
+
+resource "azurerm_subnet_route_table_association" "route_table_association" {
+  count          = "${var.add_route_table ? 1 : 0}"
+  subnet_id      = "${azurerm_subnet.subnet.id}"
+  route_table_id = "${azurerm_route_table.route_table.id}"
+}
+
+resource "azurerm_subnet_network_security_group_association" "security_group_association" {
+  count                     = "${var.add_security_group ? 1 : 0}"
+  subnet_id                 = "${azurerm_subnet.subnet.id}"
+  network_security_group_id = "${data.azurerm_network_security_group.security_group.id}"
+}
