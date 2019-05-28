@@ -121,10 +121,13 @@ variable "account_replication_type" {
   description = "The Storage Account replication type. See azurerm_storage_account module for posible values."
 }
 
+variable "azurerm_functionapp_storage_account_name" {
+  description = "The storage account name used by function_app"
+}
+
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-
   azurerm_functionapp_name = "${var.resource_name_prefix}-functions-${var.environment}"
-  azurerm_functionapp_storage_account_name = "${var.resource_name_prefix}funcstorage${var.environment}"
+  # = "${var.resource_name_prefix}funcstorage${var.environment}"
   azurerm_app_service_plan_name            = "${var.resource_name_prefix}-app-${var.environment}"
 }

@@ -1,11 +1,17 @@
 # FUNCTIONS
 
+data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
+  name                = "${var.azurerm_functionapp_storage_account_name}"
+  resource_group_name = "${var.resource_group_name}"
+}
+
+
 resource "azurerm_function_app" "azurerm_function_app" {
   name                      = "${local.azurerm_functionapp_name}"
   location                  = "${var.location}"
   resource_group_name       = "${var.resource_group_name}"
   app_service_plan_id       = "${azurerm_app_service_plan.azurerm_app_service_plan.id}"
-  storage_connection_string = "${azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
+  storage_connection_string = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
   client_affinity_enabled   = false
   version                   = "~1"
 
