@@ -15,15 +15,6 @@ variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
 
-locals {
-  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-
-  azurerm_functionapp_name = "${var.resource_name_prefix}-functions-${var.environment}"
-
-  azurerm_functionapp_storage_account_name = "${var.resource_name_prefix}funcstorage${var.environment}"
-  azurerm_app_service_plan_name            = "${var.resource_name_prefix}-app-${var.environment}"
-}
-
 # TF_VAR_ADB2C_TENANT_ID
 variable "ADB2C_TENANT_ID" {
   type        = "string"
@@ -128,4 +119,12 @@ variable "website_git_provisioner" {
 variable "account_replication_type" {
   default     = "LRS"
   description = "The Storage Account replication type. See azurerm_storage_account module for posible values."
+}
+
+locals {
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
+
+  azurerm_functionapp_name = "${var.resource_name_prefix}-functions-${var.environment}"
+  azurerm_functionapp_storage_account_name = "${var.resource_name_prefix}funcstorage${var.environment}"
+  azurerm_app_service_plan_name            = "${var.resource_name_prefix}-app-${var.environment}"
 }

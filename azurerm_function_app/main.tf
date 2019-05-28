@@ -101,27 +101,27 @@ resource "azurerm_app_service_plan" "azurerm_app_service_plan" {
   }
 }
 
-# STORAGE ACCOUNT
-resource "azurerm_storage_account" "azurerm_functionapp_storage_account" {
-  name                = "${local.azurerm_functionapp_storage_account_name}"
-  resource_group_name = "${var.resource_group_name}"
-  location            = "${var.location}"
+# # STORAGE ACCOUNT
+# resource "azurerm_storage_account" "azurerm_functionapp_storage_account" {
+#   name                = "${local.azurerm_functionapp_storage_account_name}"
+#   resource_group_name = "${var.resource_group_name}"
+#   location            = "${var.location}"
 
-  # can be one between Premium_LRS, Standard_GRS, Standard_LRS, Standard_RAGRS, Standard_ZRS
-  # see https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy
-  account_tier = "Standard"
+#   # can be one between Premium_LRS, Standard_GRS, Standard_LRS, Standard_RAGRS, Standard_ZRS
+#   # see https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy
+#   account_tier = "Standard"
 
-  account_replication_type = "${var.account_replication_type}"
+#   account_replication_type = "${var.account_replication_type}"
 
-  # account_replication_type = "GRS"
+#   # account_replication_type = "GRS"
 
-  # see https://docs.microsoft.com/en-us/azure/storage/common/storage-service-encryption
-  enable_blob_encryption    = true
-  enable_https_traffic_only = true
+#   # see https://docs.microsoft.com/en-us/azure/storage/common/storage-service-encryption
+#   enable_blob_encryption    = true
+#   enable_https_traffic_only = true
 
-  # enable_file_encryption   = true
+#   # enable_file_encryption   = true
 
-  tags {
-    environment = "${var.environment}"
-  }
-}
+#   tags {
+#     environment = "${var.environment}"
+#   }
+# }
