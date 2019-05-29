@@ -19,6 +19,10 @@ variable "azurerm_log_analytics_workspace_sku" {
   default     = "PerGB2018"
 }
 
+variable "azurerm_log_analytics_workspace_retention_in_days" {
+  description = "The number of data retention in days."
+}
+
 variable "log_analytics_workspace_name" {
   description = "The name of the log analytics workspace. It will be used as the logs analytics workspace name suffix."
 }
