@@ -40,5 +40,5 @@ locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_storage_account_name = "${var.resource_name_prefix}${var.environment}${var.storage_account_name}"
+  azurerm_storage_account_name = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
 }
