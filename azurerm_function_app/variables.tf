@@ -16,7 +16,7 @@ variable "resource_name_prefix" {
 }
 
 # TF_VAR_ADB2C_TENANT_ID
-variable "ADB2C_TENANT_ID" {
+variable "adb2c_tenant_id" {
   type        = "string"
   description = "Name of the Active Directory B2C tenant used in the API management portal authentication flow"
   default     = "agidweb"
@@ -127,7 +127,8 @@ variable "azurerm_functionapp_storage_account_name" {
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_functionapp_name = "${var.resource_name_prefix}-functions-${var.environment}"
-  # = "${var.resource_name_prefix}funcstorage${var.environment}"
-  azurerm_app_service_plan_name            = "${var.resource_name_prefix}-app-${var.environment}"
+  azurerm_functionapp_name      = "${var.resource_name_prefix}-functions-${var.environment}"
+  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_storage_account_name  = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
+  azurerm_app_service_plan_name = "${var.resource_name_prefix}-app-${var.environment}"
 }
