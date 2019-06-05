@@ -25,7 +25,6 @@ locals {
 
   azurerm_cosmosdb_account_name = "${var.resource_name_prefix}-${var.environment}-cosmosdb-${var.cosmosdb_account_name}"
 
-  locals {
-    azurerm_cosmosdb_documentdb_name = "${var.azurerm_resource_name_prefix}-documentdb-${var.environment_short}"
+    azurerm_cosmosdb_documentdb_name = "${var.resource_name_prefix}-documentdb-${var.environment}"
+    
   }
-}
