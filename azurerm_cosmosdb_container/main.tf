@@ -17,10 +17,10 @@ resource "azurerm_cosmosdb_sql_database" "cosmosdb_sql_database" {
 
 
 module "azurerm_cosmosdb_sql_container" {
-  source              = "innovationnorway/resource/azurerm"
+  source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
   api_version         = "2016-03-31"
   type                = "Microsoft.DocumentDB/databaseAccounts/apis/databases/containers"
-  name                = "${data.azurerm_cosmosdb_account.cosmosdb_account.name}/sql/${local.azurerm_cosmosdb_documentdb_name}/test_container"
+  name                = "${data.azurerm_cosmosdb_account.cosmosdb_account.name}/sql/${local.azurerm_cosmosdb_documentdb_name}/testcontainer"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   location            = "${var.location}"
   # tags                = "${var.tags}"
@@ -28,7 +28,7 @@ module "azurerm_cosmosdb_sql_container" {
 properties {
     resource = <<EOF
     {
-    	"id": "test_container",
+    	"id": "testcontainer",
 			"partitionKey": {
 						"paths": [
 						"/MyPartitionKey1"
