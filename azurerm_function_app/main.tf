@@ -69,8 +69,8 @@ resource "null_resource" "azurerm_function_app_git" {
     azurerm_functionapp_git_repo   = "${var.azurerm_functionapp_git_repo}"
     azurerm_functionapp_git_branch = "${var.azurerm_functionapp_git_branch}"
 
-    # Increment the following value when changing the provisioner script to
-    # trigger the re-execution of the script
+    # Increment the following value when the provisioner script is
+    # changed to trigger the re-execution of the script.
     # TODO: consider using the hash of the script content instead
     provisioner_version = "1"
   }
