@@ -8,6 +8,18 @@ data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
   resource_group_name = "${data.azurerm_resource_group_name.name}"
 }
 
+# Client ID of an application used in the API management portal authentication flow
+data "azurerm_key_vault_secret" "dev_portal_client_id" {
+  name         = "dev-portal-client-id-${var.environment}"
+  key_vault_id = "${var.key_vault_id}"
+}
+
+# Client secret of the application used in the API management portal authentication flow
+data "azurerm_key_vault_secret" "dev_portal_client_secret" {
+  name         = "dev-portal-client-secret-${var.environment}"
+  key_vault_id = "${var.key_vault_id}"
+}
+
 # New infrastructure
 
 resource "azurerm_function_app" "azurerm_function_app" {
@@ -50,17 +62,6 @@ resource "azurerm_function_app" "azurerm_function_app" {
   }
 }
 
-# Client ID of an application used in the API management portal authentication flow
-data "azurerm_key_vault_secret" "dev_portal_client_id" {
-  name         = "dev-portal-client-id-${var.environment}"
-  key_vault_id = "${var.key_vault_id}"
-}
-
-# Client secret of the application used in the API management portal authentication flow
-data "azurerm_key_vault_secret" "dev_portal_client_secret" {
-  name         = "dev-portal-client-secret-${var.environment}"
-  key_vault_id = "${var.key_vault_id}"
-}
 resource "null_resource" "azurerm_function_app_git" {
   triggers = {
     azurerm_functionapp_id = "${azurerm_function_app.azurerm_function_app.id}"
