@@ -1,3 +1,5 @@
+# Existing infrastructure
+
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
@@ -5,6 +7,8 @@ data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
   name                = "${local.azurerm_storage_account_name}"
   resource_group_name = "${data.azurerm_resource_group_name.name}"
 }
+
+# New infrastructure
 
 resource "azurerm_function_app" "azurerm_function_app" {
   name                      = "${local.azurerm_functionapp_name}"
@@ -16,19 +20,17 @@ resource "azurerm_function_app" "azurerm_function_app" {
   version                   = "~2"
 
   site_config = {
-    # We don't want the express server to idle
-    # so do not set `alwaysOn: false` in production
+    # We don't want the express server to idle so we do not
+    # set `alwaysOn: false` in production
     always_on = true
   }
 
   enable_builtin_logging = false
 
-  # Do not set "AzureWebJobsDashboard" to disable builtin logging
-  # see https://docs.microsoft.com/en-us/azure/azure-functions/functions-monitoring#disable-built-in-logging
+  # Do not set "AzureWebJobsDashboard" to disable builtin logging.
+  # See https://docs.microsoft.com/en-us/azure/azure-functions/functions-monitoring#disable-built-in-logging
 
   app_settings = "${var.app_settings}"
-
-  # connection_string = ["${var.connection_string}"]
 
   connection_string = [
     {
@@ -67,7 +69,7 @@ resource "null_resource" "azurerm_function_app_git" {
     azurerm_functionapp_git_repo   = "${var.azurerm_functionapp_git_repo}"
     azurerm_functionapp_git_branch = "${var.azurerm_functionapp_git_branch}"
 
-    # increment the following value when changing the provisioner script to
+    # Increment the following value when changing the provisioner script to
     # trigger the re-execution of the script
     # TODO: consider using the hash of the script content instead
     provisioner_version = "1"
@@ -91,10 +93,6 @@ resource "null_resource" "azurerm_function_app_git" {
   }
 }
 
-# locals {
-#   application_outbound_ips = "${var.azurerm_shared_address_space_cidr},${azurerm_function_app.azurerm_function_app.outbound_ip_addresses},${var.azurerm_azure_portal_ips}"
-# }
-
 resource "azurerm_app_service_plan" "azurerm_app_service_plan" {
   name                = "${local.azurerm_app_service_plan_name}"
   resource_group_name = "${var.resource_group_name}"
@@ -103,7 +101,7 @@ resource "azurerm_app_service_plan" "azurerm_app_service_plan" {
   sku {
     tier = "Standard"
 
-    # see https://azure.microsoft.com/en-en/pricing/details/app-service/
+    # See https://azure.microsoft.com/en-en/pricing/details/app-service/
     size = "S1"
   }
 }
