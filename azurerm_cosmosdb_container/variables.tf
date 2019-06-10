@@ -12,11 +12,6 @@ variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
 
-variable "tags" {
-  default     = {}
-  description = "Tags that are associated with the resource."
-}
-
 # CosmosDB specific variables
 
 variable "container_name" {
