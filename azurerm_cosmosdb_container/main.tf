@@ -9,6 +9,8 @@ data "azurerm_cosmosdb_account" "cosmosdb_account" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+# New infrastructure
+
 module "azurerm_cosmosdb_sql_container" {
   source                 = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
   api_version            = "2016-03-31"
