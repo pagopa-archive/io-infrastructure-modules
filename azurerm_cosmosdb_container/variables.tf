@@ -12,10 +12,29 @@ variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
 
+variable "tags" {
+  default     = {}
+  description = "Tags that are associated with the resource."
+}
+
 # CosmosDB specific variables
 
+variable "container_name" {
+  description = "Cosmos DB container name."
+}
+
+variable "documentdb_name" {
+  description = "Cosmos DB database name."
+  default     = ""
+}
+
+variable "partitionKey_paths" {
+  description = "List of paths using which data within the container can be partitioned"
+  default     = []
+}
+
 variable "cosmosdb_account_name" {
-  description = "The suffix used for the CosmosDB name."
+  description = "Cosmos DB account name."
 }
 
 locals {
