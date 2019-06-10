@@ -18,7 +18,10 @@ module "azurerm_cosmosdb_sql_container" {
   resource_group_name    = "${data.azurerm_resource_group.rg.name}"
   location               = "${var.location}"
   random_deployment_name = true
-  tags                   = "${var.tags}"
+
+  tags = {
+    environment = "${var.environment}"
+  }
 
   properties {
     resource {
