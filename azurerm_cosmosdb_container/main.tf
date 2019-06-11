@@ -33,6 +33,12 @@ module "azurerm_cosmosdb_sql_container" {
         paths = ["${var.partitionKey_paths}"]
         kind  = "Hash"
       }
+
+      indexingPolicy = {
+        indexingMode  = "${var.indexingMode}"
+        includedPaths = ["${var.includedPaths}"]
+        excludedPaths = []
+      }
     }
 
     options = {}
