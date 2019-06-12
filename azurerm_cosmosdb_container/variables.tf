@@ -28,6 +28,16 @@ variable "partitionKey_paths" {
   default     = []
 }
 
+variable "indexingMode" {
+  description = "Specifies the supported indexing modes in the Azure Cosmos DB service."
+  default     = "consistent"
+}
+
+variable "includedPaths" {
+  description = "Specifies a path within a JSON document to be included in the Azure Cosmos DB service."
+  default     = []
+}
+
 variable "cosmosdb_account_name" {
   description = "Cosmos DB account name."
 }
