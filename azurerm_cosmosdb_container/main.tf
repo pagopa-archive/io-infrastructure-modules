@@ -36,7 +36,7 @@ module "azurerm_cosmosdb_sql_container" {
 
       indexingPolicy = {
         indexingMode  = "${var.indexingMode}"
-        includedPaths = ["${var.includedPaths}"]
+        includedPaths = "${var.includedPaths}"
         excludedPaths = []
       }
     }
