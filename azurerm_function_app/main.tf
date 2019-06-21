@@ -69,14 +69,14 @@ module "azurerm_function_app" {
     hostNameSslStates = {
       hostType = "Standard"
 
-      name = "${local.azurerm_functionapp_name}.azurewebsites.net')"
+      name = "${local.azurerm_functionapp_name}.azurewebsites.net"
 
       sslState = "Disabled"
     }
     hostNameSslStates = {
       hostType = "Repository"
 
-      name = "${local.azurerm_functionapp_name}.scm.azurewebsites.net')"
+      name = "${local.azurerm_functionapp_name}.scm.azurewebsites.net"
 
       sslState = "Disabled"
     }
