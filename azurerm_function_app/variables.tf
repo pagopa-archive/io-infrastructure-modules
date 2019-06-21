@@ -33,10 +33,10 @@ variable "app_settings" {
 #   description = "Email address for notifications"
 # }
 
-variable "resource_group_name" {
-  type        = "string"
-  description = "Resource group name"
-}
+# variable "resource_group_name" {
+#   type        = "string"
+#   description = "Resource group name"
+# }
 
 # variable "publisher_email" {
 #   type        = "string"
@@ -59,13 +59,13 @@ variable "sku_capacity" {
   default     = 1
 }
 
-variable "key_vault_id" {
-  description = ""
-}
+# variable "key_vault_id" {
+#   description = ""
+# }
 
-variable "azurerm_function_app_name" {
-  default = "undefined"
-}
+# variable "azurerm_function_app_name" {
+#   default = "undefined"
+# }
 
 # variable "environment_short" {
 #   description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
@@ -86,6 +86,20 @@ variable "azurerm_function_app_name" {
 #   },
 #   ]
 # }
+variable "vnet_name" {
+  description = "The vnet name used by function_app"
+  default     = ""
+}
+
+variable "subnet_name" {
+  description = "The subnet name used by function_app"
+  default     = ""
+}
+
+variable "plan_name" {
+  description = "The App Service Plan name used by function_app"
+  default     = ""
+}
 
 variable "cosmosdb_key" {
   default     = "COSMOSDB_KEY used in connection_string, see above"
@@ -104,31 +118,34 @@ variable "tags" {
   default = {}
 }
 
-variable "azurerm_functionapp_git_repo" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-}
+# variable "azurerm_functionapp_git_repo" {
+#   description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
+# }
 
-variable "azurerm_functionapp_git_branch" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-}
+# variable "azurerm_functionapp_git_branch" {
+#   description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
+# }
 
-variable "website_git_provisioner" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-}
+# variable "website_git_provisioner" {
+#   description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
+# }
 
-variable "account_replication_type" {
-  default     = "LRS"
-  description = "The Storage Account replication type. See azurerm_storage_account module for posible values."
-}
+# variable "account_replication_type" {
+#   default     = "LRS"
+#   description = "The Storage Account replication type. See azurerm_storage_account module for posible values."
+# }
 
-variable "azurerm_functionapp_storage_account_name" {
+variable "storage_account_name" {
   description = "The storage account name used by function_app"
 }
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_functionapp_name      = "${var.resource_name_prefix}-functions-${var.environment}"
-  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_functionapp_name    = "${var.resource_name_prefix}-functions-${var.environment}"
+  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
+
   azurerm_storage_account_name  = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
-  azurerm_app_service_plan_name = "${var.resource_name_prefix}-app-${var.environment}"
+  azurerm_virtual_network_name  = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name           = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+  azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-function-${var.plan_name}"
 }
