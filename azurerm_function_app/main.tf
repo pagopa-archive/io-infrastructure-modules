@@ -43,7 +43,7 @@ module "azurerm_function_app" {
   api_version         = "2018-11-01"
   type                = "Microsoft.Web/sites"
   kind                = "functionapp"
-  enable_output       = "false"
+  enable_output       = false
   name                = "${local.azurerm_functionapp_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   location            = "${data.azurerm_resource_group.rg.location}"
@@ -61,10 +61,9 @@ module "azurerm_function_app" {
 
     clientCertEnabled = "false"
 
-    # "containerSize" = 1536
+    containerSize = 1536
 
-
-    # "dailyMemoryTimeQuota" = 0
+    dailyMemoryTimeQuota = 0
 
     hostNameSslStates = [{
       hostType = "Standard"
@@ -81,11 +80,52 @@ module "azurerm_function_app" {
         sslState = "Disabled"
       },
     ]
+
     hostNamesDisabled  = "false"
     httpsOnly          = "false"
     reserved           = "false"
     scmSiteAlsoStopped = "false"
     serverFarmId       = "${data.azurerm_app_service_plan.sp.id}"
+
+    # siteConfig = {
+    #   appSettings = [
+    #     {
+    #       "name" = "AzureWebJobsStorage"
+
+    #       "value" = "DefaultEndpointsProtocol=https;AccountName=functionpremiumplantest;AccountKey=eatorUEm4DumJuylUw5F5zxQQ2fvMxLxg5nLqag5W9pvKimVZ+MCBhYJM8Mz3CCV30AmjJTrsvRaSOkkCdXO8g=="
+    #     },
+    #     {
+    #       "name" = "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"
+
+    #       "value" = "DefaultEndpointsProtocol=https;AccountName=functionpremiumplantest;AccountKey=eatorUEm4DumJuylUw5F5zxQQ2fvMxLxg5nLqag5W9pvKimVZ+MCBhYJM8Mz3CCV30AmjJTrsvRaSOkkCdXO8g=="
+    #     },
+    #     {
+    #       "name" = "WEBSITE_CONTENTSHARE"
+
+    #       "value" = "[toLower(variables('functionAppName'))]"
+    #     },
+    #     {
+    #       "name" = "FUNCTIONS_EXTENSION_VERSION"
+
+    #       "value" = "~2"
+    #     },
+    #     {
+    #       "name" = "WEBSITE_NODE_DEFAULT_VERSION"
+
+    #       "value" = "10.14.1"
+    #     },
+    #     {
+    #       "name" = "APPINSIGHTS_INSTRUMENTATIONKEY"
+
+    #       "value" = "ad8878cf-7a60-4a0c-9bb2-bd7ba1f66276"
+    #     },
+    #     {
+    #       "name" = "FUNCTIONS_WORKER_RUNTIME"
+
+    #       "value" = "dotnet"
+    #     },
+    #   ]
+    # }
 
     # storage_connection_string = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
     # client_affinity_enabled   = "false"
@@ -121,11 +161,11 @@ module "azurerm_function_app" {
 # New infrastructure
 module "azurerm_function_app_VirtualNetworkConnections" {
   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-  api_version = "2016-08-01"
+  api_version = "2018-11-01"
   type        = "Microsoft.Web/sites/virtualNetworkConnections"
 
-  enable_output       = "false"
-  name                = "${local.azurerm_functionapp_name}/${data.azurerm_subnet.functions_subnet.name}"
+  enable_output       = false
+  name                = "${local.azurerm_functionapp_name}/2b5eb170-e6aa-4f63-b924-9a72691c2ba4_io-dev-subnet-functions"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   location            = "${data.azurerm_resource_group.rg.location}"
 
@@ -137,15 +177,16 @@ module "azurerm_function_app_VirtualNetworkConnections" {
   }
 
   properties {
-    vnetResourceId = "${data.azurerm_virtual_network.vnet.id}/subnets/${data.azurerm_subnet.functions_subnet.name}"
+    vnetResourceId = "${data.azurerm_subnet.functions_subnet.id}"
+
+    # vnetResourceId = "${data.azurerm_virtual_network.vnet.id}"
 
     certThumbprint = ""
     certBlob       = ""
-    routes         = ""
-    resyncRequired = "false"
-
-    dnsServers = ""
-    isSwift    = "true"
+    # routes         = ""
+    # resyncRequired = "false"
+    # dnsServers = ""
+    isSwift = "true"
   }
 }
 
@@ -171,11 +212,11 @@ module "azurerm_function_app_VirtualNetworkConnections" {
 # New infrastructure
 module "azurerm_function_app_config" {
   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-  api_version = "2016-08-01"
+  api_version = "2018-11-01"
   type        = "Microsoft.Web/sites/config"
 
   # kind                = "functionapp"
-  enable_output       = "false"
+  enable_output       = false
   name                = "${local.azurerm_functionapp_name}/web"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   location            = "${data.azurerm_resource_group.rg.location}"
@@ -238,7 +279,7 @@ module "azurerm_function_app_config" {
 
     phpVersion = "5.6"
 
-    publishingUsername = "${local.azurerm_functionapp_name}"
+    publishingUsername = "$$${local.azurerm_functionapp_name}"
 
     pythonVersion = ""
 
@@ -319,10 +360,8 @@ module "azurerm_function_app_config" {
     # vnetName = "${data.azurerm_virtual_network.vnet.name} #2b5eb170-e6aa-4f63-b924-9a72691c2ba4_io-dev-subnet-functions"
     vnetName = "${data.azurerm_virtual_network.vnet.name}"
 
-    webSocketsEnabled = "false"
-
-    winAuthAdminState = 0
-
+    webSocketsEnabled  = "false"
+    winAuthAdminState  = 0
     winAuthTenantState = 0
   }
 }
