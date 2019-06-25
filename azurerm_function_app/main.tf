@@ -66,20 +66,21 @@ module "azurerm_function_app" {
 
     # "dailyMemoryTimeQuota" = 0
 
-    hostNameSslStates = {
+    hostNameSslStates = [{
       hostType = "Standard"
 
       name = "${local.azurerm_functionapp_name}.azurewebsites.net"
 
       sslState = "Disabled"
-    }
-    hostNameSslStates = {
-      hostType = "Repository"
+    },
+      {
+        hostType = "Repository"
 
-      name = "${local.azurerm_functionapp_name}.scm.azurewebsites.net"
+        name = "${local.azurerm_functionapp_name}.scm.azurewebsites.net"
 
-      sslState = "Disabled"
-    }
+        sslState = "Disabled"
+      },
+    ]
     hostNamesDisabled  = "false"
     httpsOnly          = "false"
     reserved           = "false"
@@ -116,6 +117,315 @@ module "azurerm_function_app" {
     # ]
   }
 }
+
+# New infrastructure
+module "azurerm_function_app_VirtualNetworkConnections" {
+  source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+  api_version = "2016-08-01"
+  type        = "Microsoft.Web/sites/virtualNetworkConnections"
+
+  enable_output       = "false"
+  name                = "${local.azurerm_functionapp_name}/${data.azurerm_subnet.functions_subnet.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  location            = "${data.azurerm_resource_group.rg.location}"
+
+  # depends_on             = ["module.azurerm_function_app"]
+  random_deployment_name = true
+
+  tags = {
+    environment = "${var.environment}"
+  }
+
+  properties {
+    vnetResourceId = "${data.azurerm_virtual_network.vnet.id}/subnets/${data.azurerm_subnet.functions_subnet.name}"
+
+    certThumbprint = ""
+    certBlob       = ""
+    routes         = ""
+    resyncRequired = "false"
+
+    dnsServers = ""
+    isSwift    = "true"
+  }
+}
+
+# {
+#             "type": "Microsoft.Web/sites/virtualNetworkConnections",
+#             "apiVersion": "2016-08-01",
+#             "name": "[concat(parameters('sites_testfunctionpremium_name'), '/2b5eb170-e6aa-4f63-b924-9a72691c2ba4_io-dev-subnet-functions')]",
+#             "location": "West Europe",
+#             "dependsOn": [
+#                 "[resourceId('Microsoft.Web/sites', parameters('sites_testfunctionpremium_name'))]"
+#             ],
+#             "properties": {
+#                 "vnetResourceId": "[concat(parameters('virtualNetworks_io_dev_vnet_common_externalid'), '/subnets/io-dev-subnet-functions')]",
+#                 "certThumbprint": null,
+#                 "certBlob": null,
+#                 "routes": null,
+#                 "resyncRequired": false,
+#                 "dnsServers": null,
+#                 "isSwift": true
+#             }
+#         }
+
+# New infrastructure
+module "azurerm_function_app_config" {
+  source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+  api_version = "2016-08-01"
+  type        = "Microsoft.Web/sites/config"
+
+  # kind                = "functionapp"
+  enable_output       = "false"
+  name                = "${local.azurerm_functionapp_name}/web"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  location            = "${data.azurerm_resource_group.rg.location}"
+
+  # depends_on             = ["module.azurerm_function_app"]
+  random_deployment_name = true
+
+  tags = {
+    environment = "${var.environment}"
+  }
+
+  properties {
+    alwaysOn = "false"
+
+    appCommandLine = ""
+
+    autoHealEnabled = "false"
+
+    cors = {
+      allowedOrigins = ["https://functions.azure.com", "https://functions-staging.azure.com", "https://functions-next.azure.com"]
+
+      supportCredentials = "false"
+    }
+
+    customAppPoolIdentityAdminState = "false"
+
+    customAppPoolIdentityTenantState = "false"
+
+    defaultDocuments = ["Default.htm", "Default.html", "Default.asp", "index.htm", "index.html", "iisstart.htm", "default.aspx", "index.php"]
+
+    detailedErrorLoggingEnabled = "false"
+
+    experiments = {
+      rampUpRules = []
+    }
+
+    ftpsState = "AllAllowed"
+
+    http20Enabled = "false"
+
+    httpLoggingEnabled = "false"
+
+    linuxFxVersion = ""
+
+    loadBalancing = "LeastRequests"
+
+    localMySqlEnabled = "false"
+
+    logsDirectorySizeLimit = 35
+
+    managedPipelineMode = "Integrated"
+
+    minTlsVersion = "1.2"
+
+    netFrameworkVersion = "v4.0"
+
+    nodeVersion = ""
+
+    numberOfWorkers = 1
+
+    phpVersion = "5.6"
+
+    publishingUsername = "${local.azurerm_functionapp_name}"
+
+    pythonVersion = ""
+
+    remoteDebuggingEnabled = "false"
+
+    remoteDebuggingVersion = "VS2017"
+
+    requestTracingEnabled = "false"
+
+    reservedInstanceCount = 1
+
+    routingRules = []
+
+    scmType = "None"
+
+    siteAuthEnabled = "false"
+
+    siteAuthSettings = {
+      additionalLoginParams = ""
+
+      allowedAudiences = ""
+
+      allowedExternalRedirectUrls = ""
+
+      clientId = ""
+
+      clientSecret = ""
+
+      clientSecretCertificateThumbprint = ""
+
+      defaultProvider = ""
+
+      enabled = ""
+
+      facebookAppId = ""
+
+      facebookAppSecret = ""
+
+      facebookOAuthScopes = ""
+
+      googleClientId = ""
+
+      googleClientSecret = ""
+
+      googleOAuthScopes = ""
+
+      isAadAutoProvisioned = "false"
+
+      issuer = ""
+
+      microsoftAccountClientId = ""
+
+      microsoftAccountClientSecret = ""
+
+      microsoftAccountOAuthScopes = ""
+
+      tokenStoreEnabled = ""
+
+      twitterConsumerKey = ""
+
+      twitterConsumerSecret = ""
+
+      unauthenticatedClientAction = ""
+    }
+
+    use32BitWorkerProcess = "true"
+
+    virtualApplications = {
+      physicalPath = "site\\wwwroot"
+
+      preloadEnabled = "false"
+
+      virtualDirectories = ""
+
+      virtualPath = "/"
+    }
+
+    # vnetName = "${data.azurerm_virtual_network.vnet.name} #2b5eb170-e6aa-4f63-b924-9a72691c2ba4_io-dev-subnet-functions"
+    vnetName = "${data.azurerm_virtual_network.vnet.name}"
+
+    webSocketsEnabled = "false"
+
+    winAuthAdminState = 0
+
+    winAuthTenantState = 0
+  }
+}
+
+# {
+#         "type": "Microsoft.Web/sites/config",
+#         "apiVersion": "2016-08-01",
+#         "name": "[concat(parameters('sites_testfunctionpremium_name'), '/web')]",
+#         "location": "West Europe",
+#         "dependsOn": [
+#             "[resourceId('Microsoft.Web/sites', parameters('sites_testfunctionpremium_name'))]"
+#         ],
+#         "properties": {
+#             "numberOfWorkers": 1,
+#             "defaultDocuments": [
+#                 "Default.htm",
+#                 "Default.html",
+#                 "Default.asp",
+#                 "index.htm",
+#                 "index.html",
+#                 "iisstart.htm",
+#                 "default.aspx",
+#                 "index.php"
+#             ],
+#             "netFrameworkVersion": "v4.0",
+#             "phpVersion": "5.6",
+#             "pythonVersion": "",
+#             "nodeVersion": "",
+#             "linuxFxVersion": "",
+#             "requestTracingEnabled": false,
+#             "remoteDebuggingEnabled": false,
+#             "remoteDebuggingVersion": "VS2017",
+#             "httpLoggingEnabled": false,
+#             "logsDirectorySizeLimit": 35,
+#             "detailedErrorLoggingEnabled": false,
+#             "publishingUsername": "$testfunctionpremium",
+#             "scmType": "None",
+#             "use32BitWorkerProcess": true,
+#             "webSocketsEnabled": false,
+#             "alwaysOn": false,
+#             "appCommandLine": "",
+#             "managedPipelineMode": "Integrated",
+#             "virtualApplications": [
+#                 {
+#                     "virtualPath": "/",
+#                     "physicalPath": "site\\wwwroot",
+#                     "preloadEnabled": false,
+#                     "virtualDirectories": null
+#                 }
+#             ],
+#             "winAuthAdminState": 0,
+#             "winAuthTenantState": 0,
+#             "customAppPoolIdentityAdminState": false,
+#             "customAppPoolIdentityTenantState": false,
+#             "loadBalancing": "LeastRequests",
+#             "routingRules": [],
+#             "experiments": {
+#                 "rampUpRules": []
+#             },
+#             "autoHealEnabled": false,
+#             "vnetName": "2b5eb170-e6aa-4f63-b924-9a72691c2ba4_io-dev-subnet-functions",
+#             "siteAuthEnabled": false,
+#             "siteAuthSettings": {
+#                 "enabled": null,
+#                 "unauthenticatedClientAction": null,
+#                 "tokenStoreEnabled": null,
+#                 "allowedExternalRedirectUrls": null,
+#                 "defaultProvider": null,
+#                 "clientId": null,
+#                 "clientSecret": null,
+#                 "clientSecretCertificateThumbprint": null,
+#                 "issuer": null,
+#                 "allowedAudiences": null,
+#                 "additionalLoginParams": null,
+#                 "isAadAutoProvisioned": false,
+#                 "googleClientId": null,
+#                 "googleClientSecret": null,
+#                 "googleOAuthScopes": null,
+#                 "facebookAppId": null,
+#                 "facebookAppSecret": null,
+#                 "facebookOAuthScopes": null,
+#                 "twitterConsumerKey": null,
+#                 "twitterConsumerSecret": null,
+#                 "microsoftAccountClientId": null,
+#                 "microsoftAccountClientSecret": null,
+#                 "microsoftAccountOAuthScopes": null
+#             },
+#             "cors": {
+#                 "allowedOrigins": [
+#                     "https://functions.azure.com",
+#                     "https://functions-staging.azure.com",
+#                     "https://functions-next.azure.com"
+#                 ],
+#                 "supportCredentials": false
+#             },
+#             "localMySqlEnabled": false,
+#             "http20Enabled": false,
+#             "minTlsVersion": "1.2",
+#             "ftpsState": "AllAllowed",
+#             "reservedInstanceCount": 1
+#         }
+#     },
+
 
 # resource "azurerm_function_app" "azurerm_function_app" {
 #   name                      = "${local.azurerm_functionapp_name}"
