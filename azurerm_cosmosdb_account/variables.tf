@@ -42,7 +42,7 @@ variable "azurerm_cosmosdb_account_geo_location_slave" {
   type        = "map"
 }
 
-variable "azurerm_cosmosdb_account_virtual_network_filter_enabled" {
+variable "azurerm_cosmosdb_account_is_virtual_network_filter_enabled" {
   description = "Enables virtual network filtering "
   default     = false
 }

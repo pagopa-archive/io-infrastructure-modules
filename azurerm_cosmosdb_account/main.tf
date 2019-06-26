@@ -5,7 +5,7 @@ data "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_subnet" "functions" {
-  name                 = "${local.azurerm_subnet_name}"
+  name                 = "${local.azurerm_subnet_virtual_network_name}"
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
   virtual_network_name = "${local.azurerm_virtual_network_name}"
 }
@@ -25,7 +25,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   # TODO: create arbitrary number of geo_locations with terraform 0.12
   geo_location                      = ["${var.azurerm_cosmosdb_account_geo_location_master}"]
   geo_location                      = ["${var.azurerm_cosmosdb_account_geo_location_slave}"]
-  is_virtual_network_filter_enabled = "${var.azurerm_cosmosdb_account_virtual_network_filter_enabled}"
+  is_virtual_network_filter_enabled = "${var.azurerm_cosmosdb_account_is_virtual_network_filter_enabled}"
   # TODO: create arbitrary number of virtual_network_rule with terraform 0.12
   virtual_network_rule = {
     id = "${data.azurerm_subnet.functions.id}"
