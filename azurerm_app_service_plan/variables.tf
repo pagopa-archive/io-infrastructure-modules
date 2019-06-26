@@ -28,13 +28,13 @@ variable "azurerm_app_service_plan_kind" {
   default     = "Windows"
 }
 
-variable "azurerm_app_service_environment_id" {
-  description = "The ID of the App Service Environment where the App Service Plan should be located."
-  default     = ""
-}
-
 variable "azurerm_app_service_plan_suffix" {
   description = "The App service plan suffix name"
+}
+
+variable "azurerm_app_service_plan_sku_capacity" {
+  description = "The number of workers associated with this App Service Plan"
+  default     = ""
 }
 
 locals {
