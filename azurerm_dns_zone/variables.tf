@@ -35,12 +35,18 @@ variable "resolution_vnets" {
   description = "The optional list of the VNETs that are allowed to resolve names for this DNS private zone."
 }
 
+variable "add_environment" {
+  description = "Whether or not to add the environment variable to the domain prefix."
+  default     = true
+}
+
 locals {
   environment_dns_zone_suffix                = "${var.environment}.${var.dns_zone_suffix}"
-  private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${local.environment_dns_zone_suffix}"
+  dns_zone_suffix                            = "${var.add_environment == true ? local.environment_dns_zone_suffix : var.dns_zone_suffix}"
+  private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${local.dns_zone_suffix}"
   azurerm_virtual_network_registration_name  = "${formatlist("%s-%s-vnet-%s", var.resource_name_prefix, var.environment, var.registration_vnets)}"
   azurerm_virtual_network_resolution_name    = "${formatlist("%s-%s-vnet-%s", var.resource_name_prefix, var.environment, var.resolution_vnets)}"
-  azurerm_dns_zone_name                      = "${var.dns_zone_prefix != "" ? local.private_prefix_environment_dns_zone_suffix : local.environment_dns_zone_suffix}"
+  azurerm_dns_zone_name                      = "${var.dns_zone_prefix != "" ? local.private_prefix_environment_dns_zone_suffix : local.dns_zone_suffix}"
 
   # Define resource names based on the following convention:
   # {resource_name_prefix}-{environment}-{resource_type}-{resource_name}
