@@ -14,9 +14,16 @@ variable "azurerm_public_ip_name" {
   description = "The suffix name of the public IP address to allocate."
 }
 
+# Needs to be expressed fully through a variable because sometimes resource groups need
+# to be part of a special kubernetes resource group (automatically created), which does
+# not follow the naming pattern used for other resources.
+
+variable "azurerm_resource_group_name" {
+  description = "The full name of the resource group where to create the public IP."
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_public_ip_name       = "${var.resource_name_prefix}-${var.environment}-pip-${var.azurerm_public_ip_name}"
+  azurerm_public_ip_name = "${var.resource_name_prefix}-${var.environment}-pip-${var.azurerm_public_ip_name}"
 }
