@@ -42,6 +42,7 @@ resource "azurerm_subnet_route_table_association" "route_table_association" {
 }
 
 resource "azurerm_network_security_group" "security_group" {
+  count               = "${var.add_security_group ? 1 : 0}"
   name                = "${local.azurerm_network_security_group_name}"
   location            = "${data.azurerm_resource_group.rg.location}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
