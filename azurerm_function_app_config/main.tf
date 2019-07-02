@@ -20,17 +20,10 @@ data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
-data "azurerm_app_service_plan" "sp" {
-  name                = "${local.azurerm_app_service_plan_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-}
-
 module "azurerm_function_app_settings" {
   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
   api_version = "2016-08-01"
   type        = "Microsoft.Web/sites/config"
-
-  # kind                = "functionapp"
   enable_output       = false
   name                = "${local.azurerm_functionapp_name}/appsettings"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
@@ -46,9 +39,9 @@ module "azurerm_function_app_settings" {
     AzureWebJobsStorage = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
 
     AzureWebJobsDashboard        = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
-    FUNCTIONS_EXTENSION_VERSION  = "${var.functions_extension_version}"
-    WEBSITE_NODE_DEFAULT_VERSION = "${var.website_node_default_version}"
-    FUNCTIONS_WORKER_RUNTIME     = "${var.functions_worker_runtime}"
+    # FUNCTIONS_EXTENSION_VERSION  = "${var.functions_extension_version}"
+    # WEBSITE_NODE_DEFAULT_VERSION = "${var.website_node_default_version}"
+    # FUNCTIONS_WORKER_RUNTIME     = "${var.functions_worker_runtime}"
 
     # WEBSITE_CONTENTAZUREFILECONNECTIONSTRING = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
 
