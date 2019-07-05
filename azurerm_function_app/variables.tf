@@ -15,6 +15,10 @@ variable "plan_name" {
   default     = ""
 }
 
+variable "storage_account_name" {
+  description = "The storage account name used by function_app"
+}
+
 variable "connectionStrings" {
   default     = []
   description = "includes the authentication information required for your application to access data in an Azure Storage account at runtime using Shared Key authorization"
@@ -31,5 +35,6 @@ locals {
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
 
   azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-function-${var.plan_name}"
+  azurerm_storage_account_name  = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
   azurerm_key_vault_name        = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }

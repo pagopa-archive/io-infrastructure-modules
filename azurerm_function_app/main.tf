@@ -9,6 +9,11 @@ data "azurerm_app_service_plan" "sp" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
+  name                = "${local.azurerm_storage_account_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
 # New infrastructure
 module "azurerm_function_app_site" {
   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
@@ -29,45 +34,27 @@ module "azurerm_function_app_site" {
   properties {
     enabled = "true"
 
-    # app_service_plan_id   = "${data.azurerm_app_service_plan.sp.id}"
     clientAffinityEnabled = "false"
 
-    # clientCertEnabled = "false"
-
-
-    # containerSize = 1536
-
-
-    # dailyMemoryTimeQuota = 0
-
-
-    # hostNameSslStates = [{
-    #   hostType = "Standard"
-
-
-    #   name = "${local.azurerm_functionapp_name}.azurewebsites.net"
-
-
-    #   sslState = "Disabled"
-    # },
-    #   {
-    #     hostType = "Repository"
-
-
-    #     name = "${local.azurerm_functionapp_name}.scm.azurewebsites.net"
-
-    # sslState = "Disabled"
-    #   },
-    # ]
     siteConfig = {
-      alwaysOn          = "true"
+      alwaysOn = "true"
+
       connectionStrings = ["${data.null_data_source.connectionStrings.*.outputs}"]
-      appSettings       = ["${data.null_data_source.appSettings.*.outputs}"]
+
+      appSettings = [
+        {
+          Name  = "AzureWebJobsStorage"
+          Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
+        },
+        {
+          Name  = "AzureWebJobsDashboard"
+          Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
+        },
+        "${data.null_data_source.appSettings.*.outputs}",
+      ]
     }
-    # hostNamesDisabled  = "false"
-    httpsOnly = "false"
-    # reserved           = "false"
-    # scmSiteAlsoStopped = "false"
+
+    httpsOnly    = "false"
     serverFarmId = "${data.azurerm_app_service_plan.sp.id}"
   }
 }
