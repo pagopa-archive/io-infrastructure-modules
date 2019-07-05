@@ -31,8 +31,8 @@ variable "appSettings" {
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_functionapp_name    = "${var.resource_name_prefix}-functions-${var.environment}"
-  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_functionapp_name      = "${var.resource_name_prefix}-functions-${var.environment}"
+  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
 
   azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-function-${var.plan_name}"
   azurerm_storage_account_name  = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
