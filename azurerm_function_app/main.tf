@@ -1,127 +1,95 @@
-# FUNCTIONS
+# Existing infrastructure
 
-resource "azurerm_function_app" "azurerm_function_app" {
-  name                      = "${local.azurerm_functionapp_name}"
-  location                  = "${var.location}"
-  resource_group_name       = "${var.resource_group_name}"
-  app_service_plan_id       = "${azurerm_app_service_plan.azurerm_app_service_plan.id}"
-  storage_connection_string = "${azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
-  client_affinity_enabled   = false
-  version                   = "~1"
-
-  site_config = {
-    # We don't want the express server to idle
-    # so do not set `alwaysOn: false` in production
-    always_on = true
-  }
-
-  enable_builtin_logging = false
-
-  # Do not set "AzureWebJobsDashboard" to disable builtin logging
-  # see https://docs.microsoft.com/en-us/azure/azure-functions/functions-monitoring#disable-built-in-logging
-
-  app_settings = "${var.app_settings}"
-
-  # connection_string = ["${var.connection_string}"]
-
-  connection_string = [
-    {
-      name  = "COSMOSDB_KEY"
-      type  = "Custom"
-      value = "${var.cosmosdb_key}"
-    },
-    {
-      name  = "COSMOSDB_URI"
-      type  = "Custom"
-      value = "${var.cosmosdb_uri}"
-    },
-  ]
+data "azurerm_resource_group" "rg" {
+  name = "${local.azurerm_resource_group_name}"
 }
 
-# Client ID of an application used in the API management portal authentication flow
-data "azurerm_key_vault_secret" "dev_portal_client_id" {
-  name         = "dev-portal-client-id-${var.environment}"
-  key_vault_id = "${var.key_vault_id}"
-}
-
-# Client secret of the application used in the API management portal authentication flow
-data "azurerm_key_vault_secret" "dev_portal_client_secret" {
-  name         = "dev-portal-client-secret-${var.environment}"
-  key_vault_id = "${var.key_vault_id}"
-}
-
-resource "null_resource" "azurerm_function_app_git" {
-  triggers = {
-    azurerm_functionapp_id = "${azurerm_function_app.azurerm_function_app.id}"
-
-    # trigger recreation of this resource when the following variables change
-    azurerm_functionapp_git_repo   = "${var.azurerm_functionapp_git_repo}"
-    azurerm_functionapp_git_branch = "${var.azurerm_functionapp_git_branch}"
-
-    # increment the following value when changing the provisioner script to
-    # trigger the re-execution of the script
-    # TODO: consider using the hash of the script content instead
-    provisioner_version = "1"
-  }
-
-  provisioner "local-exec" {
-    command = "${join(" ", list(
-      "ts-node --files ${var.website_git_provisioner}",
-      "--resource-group-name ${var.resource_group_name}",
-      "--app-name ${azurerm_function_app.azurerm_function_app.name}",
-      "--git-repo ${var.azurerm_functionapp_git_repo}",
-      "--git-branch ${var.azurerm_functionapp_git_branch}"))
-    }"
-
-    environment = {
-      ENVIRONMENT                     = "${var.environment}"
-      TF_VAR_ADB2C_TENANT_ID          = "${var.ADB2C_TENANT_ID}"
-      TF_VAR_DEV_PORTAL_CLIENT_ID     = "${data.azurerm_key_vault_secret.dev_portal_client_id.value}"
-      TF_VAR_DEV_PORTAL_CLIENT_SECRET = "${data.azurerm_key_vault_secret.dev_portal_client_secret.value}"
-    }
-  }
-}
-
-# locals {
-#   application_outbound_ips = "${var.azurerm_shared_address_space_cidr},${azurerm_function_app.azurerm_function_app.outbound_ip_addresses},${var.azurerm_azure_portal_ips}"
-# }
-
-## APP SERVICE PLAN
-
-resource "azurerm_app_service_plan" "azurerm_app_service_plan" {
+data "azurerm_app_service_plan" "sp" {
   name                = "${local.azurerm_app_service_plan_name}"
-  resource_group_name = "${var.resource_group_name}"
-  location            = "${var.location}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
 
-  sku {
-    tier = "Standard"
+data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
+  name                = "${local.azurerm_storage_account_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
 
-    # see https://azure.microsoft.com/en-en/pricing/details/app-service/
-    size = "S1"
+data "azurerm_key_vault" "key_vault" {
+  name                = "${local.azurerm_key_vault_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+data "azurerm_key_vault_secret" "appsettings" {
+  count        = "${length(var.appSettings)}"
+  name         = "${lookup(var.appSettings[count.index],"Alias")}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+data "null_data_source" "appSettings" {
+  count = "${length(var.appSettings)}"
+
+  inputs = {
+    Name  = "${lookup(var.appSettings[count.index],"Name")}"
+    Value = "${element(data.azurerm_key_vault_secret.appsettings.*.value, count.index)}"
   }
 }
 
-# STORAGE ACCOUNT
-resource "azurerm_storage_account" "azurerm_functionapp_storage_account" {
-  name                = "${local.azurerm_functionapp_storage_account_name}"
-  resource_group_name = "${var.resource_group_name}"
-  location            = "${var.location}"
+data "azurerm_key_vault_secret" "connectionStrings" {
+  count        = "${length(var.connectionStrings)}"
+  name         = "${lookup(var.connectionStrings[count.index],"Alias")}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
 
-  # can be one between Premium_LRS, Standard_GRS, Standard_LRS, Standard_RAGRS, Standard_ZRS
-  # see https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy
-  account_tier = "Standard"
+data "null_data_source" "connectionStrings" {
+  count = "${length(var.connectionStrings)}"
 
-  account_replication_type = "${var.account_replication_type}"
+  inputs = {
+    Name  = "${lookup(var.connectionStrings[count.index],"Name")}"
+    Value = "${element(data.azurerm_key_vault_secret.connectionStrings.*.value, count.index)}"
+  }
+}
 
-  # account_replication_type = "GRS"
+# New infrastructure
+module "azurerm_function_app_site" {
+  source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+  api_version         = "2016-08-01"
+  type                = "Microsoft.Web/sites"
+  kind                = "functionapp"
+  enable_output       = true
+  name                = "${local.azurerm_functionapp_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  location            = "${data.azurerm_resource_group.rg.location}"
 
-  # see https://docs.microsoft.com/en-us/azure/storage/common/storage-service-encryption
-  enable_blob_encryption    = true
-  enable_https_traffic_only = true
+  random_deployment_name = true
 
-  # enable_file_encryption   = true
-
-  tags {
+  tags = {
     environment = "${var.environment}"
+  }
+
+  properties {
+    enabled = "true"
+
+    clientAffinityEnabled = "false"
+
+    siteConfig = {
+      alwaysOn = "true"
+
+      connectionStrings = ["${data.null_data_source.connectionStrings.*.outputs}"]
+
+      appSettings = [
+        {
+          Name  = "AzureWebJobsStorage"
+          Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
+        },
+        {
+          Name  = "AzureWebJobsDashboard"
+          Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
+        },
+        "${data.null_data_source.appSettings.*.outputs}",
+      ]
+    }
+
+    httpsOnly    = "false"
+    serverFarmId = "${data.azurerm_app_service_plan.sp.id}"
   }
 }
