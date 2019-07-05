@@ -15,7 +15,7 @@ variable "resource_name_prefix" {
 # DNS module specific variables
 
 variable "azurerm_public_ip_name" {
-  description = "The suffix name of the public IP address to allocate."
+  description = "The name suffix of the public IP address to allocate."
 }
 
 variable "dns_zone_prefix" {
