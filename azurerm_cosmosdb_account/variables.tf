@@ -42,9 +42,25 @@ variable "azurerm_cosmosdb_account_geo_location_slave" {
   type        = "map"
 }
 
+variable "azurerm_cosmosdb_account_is_virtual_network_filter_enabled" {
+  description = "Enables virtual network filtering "
+  default     = false
+}
+
+variable "vnet_name" {
+  description = "The name of the virtual network connecting all resources."
+}
+
+variable "subnet_name" {
+  description = "The name of the virtual network connecting all resources."
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
+
+  azurerm_virtual_network_name  = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name           = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
   azurerm_cosmosdb_account_name = "${var.resource_name_prefix}-${var.environment}-cosmosdb-${var.cosmosdb_account_name}"
 }
