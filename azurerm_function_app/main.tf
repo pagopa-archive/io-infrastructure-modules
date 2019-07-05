@@ -14,6 +14,41 @@ data "azurerm_storage_account" "azurerm_functionapp_storage_account" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "azurerm_key_vault" "key_vault" {
+  name                = "${local.azurerm_key_vault_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+data "azurerm_key_vault_secret" "appsettings" {
+  count        = "${length(var.appSettings)}"
+  name         = "${lookup(var.appSettings[count.index],"Alias")}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+data "null_data_source" "appSettings" {
+  count = "${length(var.appSettings)}"
+
+  inputs = {
+    Name  = "${lookup(var.appSettings[count.index],"Name")}"
+    Value = "${element(data.azurerm_key_vault_secret.appsettings.*.value, count.index)}"
+  }
+}
+
+data "azurerm_key_vault_secret" "connectionStrings" {
+  count        = "${length(var.connectionStrings)}"
+  name         = "${lookup(var.connectionStrings[count.index],"Alias")}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+data "null_data_source" "connectionStrings" {
+  count = "${length(var.connectionStrings)}"
+
+  inputs = {
+    Name  = "${lookup(var.connectionStrings[count.index],"Name")}"
+    Value = "${element(data.azurerm_key_vault_secret.connectionStrings.*.value, count.index)}"
+  }
+}
+
 # New infrastructure
 module "azurerm_function_app_site" {
   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
@@ -56,40 +91,5 @@ module "azurerm_function_app_site" {
 
     httpsOnly    = "false"
     serverFarmId = "${data.azurerm_app_service_plan.sp.id}"
-  }
-}
-
-data "azurerm_key_vault" "key_vault" {
-  name                = "${local.azurerm_key_vault_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-}
-
-data "azurerm_key_vault_secret" "appsettings" {
-  count        = "${length(var.appSettings)}"
-  name         = "${lookup(var.appSettings[count.index],"Alias")}"
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-}
-
-data "null_data_source" "appSettings" {
-  count = "${length(var.appSettings)}"
-
-  inputs = {
-    Name  = "${lookup(var.appSettings[count.index],"Name")}"
-    Value = "${element(data.azurerm_key_vault_secret.appsettings.*.value, count.index)}"
-  }
-}
-
-data "azurerm_key_vault_secret" "connectionStrings" {
-  count        = "${length(var.connectionStrings)}"
-  name         = "${lookup(var.connectionStrings[count.index],"Alias")}"
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-}
-
-data "null_data_source" "connectionStrings" {
-  count = "${length(var.connectionStrings)}"
-
-  inputs = {
-    Name  = "${lookup(var.connectionStrings[count.index],"Name")}"
-    Value = "${element(data.azurerm_key_vault_secret.connectionStrings.*.value, count.index)}"
   }
 }
