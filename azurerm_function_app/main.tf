@@ -19,46 +19,55 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
-data "azurerm_key_vault_secret" "appsettings" {
-  count        = "${length(var.appSettings)}"
-  name         = "${lookup(var.appSettings[count.index],"Alias")}"
+data "azurerm_key_vault_secret" "functionapp_settings_secrets" {
+  count        = "${length(var.functionapp_settings_secrets)}"
+  name         = "${lookup(var.functionapp_settings_secrets[count.index],"vault_alias")}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 
-data "null_data_source" "appSettings" {
-  count = "${length(var.appSettings)}"
+data "null_data_source" "functionapp_settings" {
+  count = "${length(var.functionapp_settings)}"
 
   inputs = {
-    Name  = "${lookup(var.appSettings[count.index],"Name")}"
-    Value = "${element(data.azurerm_key_vault_secret.appsettings.*.value, count.index)}"
+    Name  = "${lookup(var.functionapp_settings[count.index],"name")}"
+    Value = "${lookup(var.functionapp_settings[count.index],"value")}"
   }
 }
 
-data "azurerm_key_vault_secret" "connectionStrings" {
-  count        = "${length(var.connectionStrings)}"
-  name         = "${lookup(var.connectionStrings[count.index],"Alias")}"
+data "null_data_source" "functionapp_settings_secrets" {
+  count = "${length(var.functionapp_settings_secrets)}"
+
+  inputs = {
+    Name  = "${lookup(var.functionapp_settings_secrets[count.index],"name")}"
+    Value = "${element(data.azurerm_key_vault_secret.functionapp_settings_secrets.*.value, count.index)}"
+  }
+}
+
+data "azurerm_key_vault_secret" "functionapp_connection_strings" {
+  count        = "${length(var.functionapp_connection_strings)}"
+  name         = "${lookup(var.functionapp_connection_strings[count.index],"vault_alias")}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 
-data "null_data_source" "connectionStrings" {
-  count = "${length(var.connectionStrings)}"
+data "null_data_source" "functionapp_connection_strings" {
+  count = "${length(var.functionapp_connection_strings)}"
 
   inputs = {
-    Name  = "${lookup(var.connectionStrings[count.index],"Name")}"
-    Value = "${element(data.azurerm_key_vault_secret.connectionStrings.*.value, count.index)}"
+    Name  = "${lookup(var.functionapp_connection_strings[count.index],"name")}"
+    Value = "${element(data.azurerm_key_vault_secret.functionapp_connection_strings.*.value, count.index)}"
   }
 }
 
 # New infrastructure
 module "azurerm_function_app_site" {
+  name                = "${local.azurerm_functionapp_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  location            = "${data.azurerm_resource_group.rg.location}"
   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
   api_version         = "2016-08-01"
   type                = "Microsoft.Web/sites"
   kind                = "functionapp"
   enable_output       = true
-  name                = "${local.azurerm_functionapp_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  location            = "${data.azurerm_resource_group.rg.location}"
 
   random_deployment_name = true
 
@@ -74,7 +83,7 @@ module "azurerm_function_app_site" {
     siteConfig = {
       alwaysOn = "true"
 
-      connectionStrings = ["${data.null_data_source.connectionStrings.*.outputs}"]
+      connectionStrings = ["${data.null_data_source.functionapp_connection_strings.*.outputs}"]
 
       appSettings = [
         {
@@ -85,7 +94,8 @@ module "azurerm_function_app_site" {
           Name  = "AzureWebJobsDashboard"
           Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
         },
-        "${data.null_data_source.appSettings.*.outputs}",
+        "${data.null_data_source.functionapp_settings.*.outputs}",
+        "${data.null_data_source.functionapp_settings_secrets.*.outputs}"
       ]
     }
 
