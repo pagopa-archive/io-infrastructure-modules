@@ -20,6 +20,10 @@ variable "subnet_name" {
   default     = ""
 }
 
+variable "functionapp_name" {
+  description = "The name suffix of the functionapp."
+}
+
 variable "azurerm_functionapp_git_repo" {
   description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
 }
@@ -33,15 +37,10 @@ variable "website_git_provisioner" {
   default     = "azurerm_website_git.ts"
 }
 
-variable "storage_account_name" {
-  description = "The storage account name used by function_app"
-}
-
 locals {
-  azurerm_functionapp_name     = "${var.resource_name_prefix}-functions-${var.environment}"
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_functionapp_name     = "${var.resource_name_prefix}-${var.environment}-fn-${var.functionapp_name}"
   azurerm_virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
   azurerm_subnet_name          = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
-
-  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
 }
