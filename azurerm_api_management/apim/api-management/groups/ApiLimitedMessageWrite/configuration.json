@@ -1,0 +1,7 @@
+{
+  "name": "ApiLimitedMessageWrite",
+  "$ref-description": null,
+  "builtIn": false,
+  "type": "custom",
+  "externalId": null
+}

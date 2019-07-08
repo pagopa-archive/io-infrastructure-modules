@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "RegistrationEnabled": "False",
+    "UserRegistrationTerms": null,
+    "UserRegistrationTermsEnabled": "False",
+    "UserRegistrationTermsConsentRequired": "False",
+    "DelegationEnabled": "False",
+    "DelegationUrl": "",
+    "DelegatedSubscriptionEnabled": "False",
+    "RequireUserSigninEnabled": "True"
+  },
+  "$ref-policy": "api-management/policies/global.xml",
+  "IntegrationModuleVersion": "13",
+  "IntegrationModuleBitsVersion": "0.8.433.0",
+  "ExportDate": "2017-11-27T15:30:56.1325694Z"
+}

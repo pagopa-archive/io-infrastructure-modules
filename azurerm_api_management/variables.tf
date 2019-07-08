@@ -15,11 +15,35 @@ variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
 
+variable "function_app_name" {
+  description = "The function name."
+}
+
+variable "apim_name" {
+  description = "The API Management name."
+}
+
 locals {
-  # Define resource names based on the following convention:
-  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_apim_name = "${var.resource_name_prefix}-apim-${var.environment}"
-  azurerm_apim_scmurl = "https://${var.resource_name_prefix}-apim-${var.environment}.scm.azure-api.net/"
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
+  azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_apim_name            = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
+  azurerm_function_app_name    = "${var.resource_name_prefix}-${var.environment}-fn-${var.function_app_name}"
+  azurerm_apim_scmurl          = "https://${var.resource_name_prefix}-apim-${var.environment}.scm.azure-api.net/"
+  azurerm_virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name          = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+
+  # locals {
+  #   # Common tags to be assigned to all resources
+  # "${merge(map("Name", (var.single_nat_gateway ? "${var.name}-${var.private_subnet_suffix}" : format("%s-${var.private_subnet_suffix}-%s", var.name, element(var.azs, count.index)))), var.tags, var.private_route_table_tags)}"
+  #   apim_properties = {
+  #     publisherEmail              = "${var.publisher_email}"
+  #     publisherName               = "${var.publisher_name}"
+  #     virtualNetworkType          = "${var.virtualNetworkType}"
+  #     # TODO: need a conditional to remove name when value is null
+  #     # virtualNetworkConfiguration = "${var.virtualNetworkConfiguration}"
+  #     # customProperties            = "${var.customProperties}"
+  #   }
+  # }
 }
 
 # TF_VAR_ADB2C_TENANT_ID
@@ -31,18 +55,13 @@ variable "ADB2C_TENANT_ID" {
 
 # TODO: needs refactoring
 variable "apim_configuration_path" {
-  default     = "common/apim.json"
+  default     = "apim.json"
   description = "Path of the (json) file that contains the configuration settings for the API management resource"
 }
 
 variable "notification_sender_email" {
   type        = "string"
   description = "Email address from which the notification will be sent."
-}
-
-variable "resource_group_name" {
-  type        = "string"
-  description = "Resource group name"
 }
 
 variable "publisher_email" {
@@ -80,11 +99,11 @@ variable "virtualNetworkType" {
   default     = "external"
 }
 
-variable "virtualNetworkConfiguration" {
-  description = "Configuration of a virtual network to which API Management service is deployed."
-  type        = "map"
-  default     = {}
-}
+# variable "subnetResourceId" {
+#   description = "The full resource ID of a subnet in a virtual network to deploy the API Management service in."
+#   type        = "string"
+#   default     = ""
+# }
 
 variable "tags" {
   description = "A map of tags to add to all resources"
@@ -120,3 +139,12 @@ variable "eventhub_name" {
   default = ""
 }
 
+variable "vnet_name" {
+  description = "The vnet name used by function_app"
+  default     = ""
+}
+
+variable "subnet_name" {
+  description = "The subnet name used by function_app"
+  default     = ""
+}
