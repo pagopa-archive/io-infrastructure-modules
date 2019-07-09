@@ -24,6 +24,11 @@ variable "azurerm_storage_account_account_replication_type" {
   description = "The Azure storage account replication type"
 }
 
+variable "set_firewall" {
+  description = "Whether or not to filter IPs and VNETs access."
+  default = true
+}
+
 variable "allowed_subnets" {
   description = "The list of subnets allowed to access the storage account"
   type        = "list"
