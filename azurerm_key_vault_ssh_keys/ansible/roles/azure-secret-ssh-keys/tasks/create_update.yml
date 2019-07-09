@@ -1,0 +1,116 @@
+---
+
+- name: Set tmp variables
+  set_fact:
+    tmp_id_rsa_path: "/tmp/{{ azure_secretsshkey_key }}_id_ssh_rsa"
+    tmp_vault_id_rsa_path: "/tmp/{{ azure_secretsshkey_key }}_ssh_rsa_from_vault"
+
+- name: Delete previous id_rsa key
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ tmp_id_rsa_path }}"
+    - "{{ tmp_id_rsa_path }}.pub"
+  delegate_to: localhost
+
+- name: Create new id_ssh_rsa key
+  shell: >
+    ssh-keygen -t rsa -b 2048
+    -C "{{ azure_secretsshkey_email }}"
+    -f {{ tmp_id_rsa_path }} -N ""
+  delegate_to: localhost
+
+# Create only
+
+- name: Create secret with file but do not update it
+  block:
+    - name: Retrieve private ssh key secret from vault
+      shell: >
+        az keyvault secret show
+        --name {{ azure_secretsshkey_key }}
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --query value -o tsv
+      register: my_current_private_ssh_key
+      ignore_errors: yes
+
+    - name: Register secret with ssh key in vault (force=no)
+      shell: >
+        az keyvault secret set
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --name {{ azure_secretsshkey_key }}
+        --file {{ tmp_id_rsa_path }}
+      register: set_result
+      when: my_current_private_ssh_key.stderr
+
+    - name: Retrieve public ssh key secret from vault
+      shell: >
+        az keyvault secret show
+        --name {{ azure_secretsshkey_key_pub }}
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --query value -o tsv
+      register: my_current_public_ssh_key
+      ignore_errors: yes
+
+    - name: Register secret with public ssh key in vault (force=no)
+      shell: >
+        az keyvault secret set
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --name {{ azure_secretsshkey_key_pub }}
+        --value "{{ lookup('file', '{{ tmp_id_rsa_path }}.pub') }}"
+      register: set_result
+      when: my_current_public_ssh_key.stderr
+
+  delegate_to: localhost
+  when: not azure_secretsshkey_force
+
+# Create or update the value
+
+- name: Create secret with private key and update it
+  block:
+    - name: Register secret with ssh key in Vault (force=yes)
+      shell: >
+        az keyvault secret set
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --name {{ azure_secretsshkey_key }}
+        --file {{ tmp_id_rsa_path }}
+      register: set_result
+
+    - name: Register secret with public ssh key in vault (force=no)
+      shell: >
+        az keyvault secret set
+        --vault-name {{ azure_secretsshkey_vault_name }}
+        --name {{ azure_secretsshkey_key_pub }}
+        --value "{{ lookup('file', '{{ tmp_id_rsa_path }}.pub') }}"
+      register: set_result
+      when: my_current_public_ssh_key.stderr
+
+  delegate_to: localhost
+  when: azure_secretsshkey_force
+
+- name: Delete previus downloaded id_rsa key
+  file:
+    path: "{{ tmp_vault_id_rsa_path }}"
+    state: absent
+
+- name: Download ssh key from Vault
+  shell: >
+    az keyvault secret download
+    --vault-name {{ azure_secretsshkey_vault_name }}
+    --name {{ azure_secretsshkey_key }}
+    --file {{ tmp_vault_id_rsa_path }}
+  register: sshkey_download_value
+
+- name: Set variable with the content of the private key
+  set_fact:
+    "{{ azure_secretsshkey_key }}": "{{ lookup('file', '{{ tmp_vault_id_rsa_path }}') }}"
+
+- name: Clean all the rsa file
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ tmp_vault_id_rsa_path }}"
+    - "{{ tmp_id_rsa_path }}"
+    - "{{ tmp_id_rsa_path }}.pub"
+  delegate_to: localhost

@@ -1,0 +1,13 @@
+---
+
+- name: Delete secret in Vault
+  shell: >
+    az keyvault secret delete
+    --vault-name {{ azure_secretsshkey_vault_name }}
+    --name {{ azure_secretsshkey_key }}
+  delegate_to: localhost
+  register: delete_result
+
+- name: Show result of delete
+  debug:
+    msg: "{{ delete_result }}"

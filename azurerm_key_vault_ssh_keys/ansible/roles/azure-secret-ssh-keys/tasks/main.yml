@@ -1,0 +1,7 @@
+---
+
+- include: create_update.yml
+  when: azure_secretsshkey_state == 'present'
+
+- include: delete.yml
+  when: azure_secretsshkey_state == 'absent'
