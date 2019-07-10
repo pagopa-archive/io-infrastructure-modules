@@ -66,33 +66,40 @@ module "azurerm_api_management" {
   }
 }
 
-resource "null_resource" "azurerm_apim" {
-  count = "${var.create ? 1 : 0}"
+# resource "null_resource" "azurerm_apim" {
+#   count = "${var.create ? 1 : 0}"
 
-  triggers = {
-    azurerm_function_app_name = "${local.azurerm_function_app_name}"
 
-    provisioner_version = "${var.provisioner_version}"
-  }
+#   triggers = {
+#     azurerm_function_app_name = "${local.azurerm_function_app_name}"
 
-  provisioner "local-exec" {
-    command = "${join(" ", list(
-      "ts-node --log-error --files ${var.apim_provisioner}",
-      "--environment ${var.environment}",
-      "--azurerm_resource_group ${data.azurerm_resource_group.rg.name}",
-      "--azurerm_apim ${local.azurerm_apim_name}",
-      "--azurerm_apim_scm_url https://${local.azurerm_apim_name}.scm.azure-api.net/",
-      "--azurerm_functionapp ${data.azurerm_app_service.function.name}",
-      "--apim_configuration_path ${var.apim_configuration_path}"))
-    }"
 
-    environment = {
-      ENVIRONMENT = "${var.environment}"
+#     provisioner_version = "${var.provisioner_version}"
+#   }
 
-      TF_VAR_ADB2C_TENANT_ID = "${var.ADB2C_TENANT_ID}"
 
-      TF_VAR_DEV_PORTAL_CLIENT_ID     = "${data.azurerm_key_vault_secret.dev_portal_client_id.value}"
-      TF_VAR_DEV_PORTAL_CLIENT_SECRET = "${data.azurerm_key_vault_secret.dev_portal_client_secret.value}"
-    }
-  }
-}
+#   provisioner "local-exec" {
+#     command = "${join(" ", list(
+#       "ts-node --log-error --files ${var.apim_provisioner}",
+#       "--environment ${var.environment}",
+#       "--azurerm_resource_group ${data.azurerm_resource_group.rg.name}",
+#       "--azurerm_apim ${local.azurerm_apim_name}",
+#       "--azurerm_apim_scm_url https://${local.azurerm_apim_name}.scm.azure-api.net/",
+#       "--azurerm_functionapp ${data.azurerm_app_service.function.name}",
+#       "--apim_configuration_path ${var.apim_configuration_path}"))
+#     }"
+
+
+#     environment = {
+#       ENVIRONMENT = "${var.environment}"
+
+
+#       TF_VAR_ADB2C_TENANT_ID = "${var.ADB2C_TENANT_ID}"
+
+
+#       TF_VAR_DEV_PORTAL_CLIENT_ID     = "${data.azurerm_key_vault_secret.dev_portal_client_id.value}"
+#       TF_VAR_DEV_PORTAL_CLIENT_SECRET = "${data.azurerm_key_vault_secret.dev_portal_client_secret.value}"
+#     }
+#   }
+# }
+
