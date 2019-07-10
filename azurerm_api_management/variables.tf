@@ -116,3 +116,12 @@ variable "apim_groups" {
   description = "Api Management groups."
   default     = []
 }
+
+variable "apim_products" {
+  description = "Api Management products."
+  default     = []
+}
+
+variable "backendUrl" {
+  description = "URL of the function backend"
+}
