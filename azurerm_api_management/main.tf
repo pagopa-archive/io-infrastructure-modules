@@ -100,6 +100,7 @@ resource "azurerm_api_management_product" "products" {
   api_management_name   = "${local.azurerm_apim_name}"
   resource_group_name   = "${data.azurerm_resource_group.rg.name}"
   display_name          = "${lookup(var.apim_products[count.index],"display_name","${lookup(var.apim_products[count.index],"id")}")}"
+  description           = "${lookup(var.apim_products[count.index],"description","---")}"
   subscription_required = "${lookup(var.apim_products[count.index],"subscription_required","true")}"
   subscriptions_limit   = "${lookup(var.apim_products[count.index],"subscriptions_limit","100")}"
   approval_required     = "${lookup(var.apim_products[count.index],"approval_required","true")}"
