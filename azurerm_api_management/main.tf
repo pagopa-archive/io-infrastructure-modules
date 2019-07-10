@@ -21,17 +21,17 @@ data "azurerm_subnet" "apim_subnet" {
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
 
-# # Client ID of an application used in the API management portal authentication flow
-# data "azurerm_key_vault_secret" "dev_portal_client_id" {
-#   name         = "dev-portal-client-id-${var.environment}"
-#   key_vault_id = "${var.key_vault_id}"
-# }
+# Client ID of an application used in the API management portal authentication flow
+data "azurerm_key_vault_secret" "dev_portal_client_id" {
+  name         = "dev-portal-client-id-${var.environment}"
+  key_vault_id = "${var.key_vault_id}"
+}
 
-# # Client secret of the application used in the API management portal authentication flow
-# data "azurerm_key_vault_secret" "dev_portal_client_secret" {
-#   name         = "dev-portal-client-secret-${var.environment}"
-#   key_vault_id = "${var.key_vault_id}"
-# }
+# Client secret of the application used in the API management portal authentication flow
+data "azurerm_key_vault_secret" "dev_portal_client_secret" {
+  name         = "dev-portal-client-secret-${var.environment}"
+  key_vault_id = "${var.key_vault_id}"
+}
 
 module "azurerm_api_management" {
   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
@@ -77,7 +77,7 @@ resource "null_resource" "azurerm_apim" {
 
   provisioner "local-exec" {
     command = "${join(" ", list(
-      "ts-node --files ${var.apim_provisioner}",
+      "ts-node --log-error --files ${var.apim_provisioner}",
       "--environment ${var.environment}",
       "--azurerm_resource_group ${data.azurerm_resource_group.rg.name}",
       "--azurerm_apim ${local.azurerm_apim_name}",
@@ -89,10 +89,10 @@ resource "null_resource" "azurerm_apim" {
     environment = {
       ENVIRONMENT = "${var.environment}"
 
-      # TF_VAR_ADB2C_TENANT_ID = "${var.ADB2C_TENANT_ID}"
+      TF_VAR_ADB2C_TENANT_ID = "${var.ADB2C_TENANT_ID}"
 
-      # TF_VAR_DEV_PORTAL_CLIENT_ID     = "${data.azurerm_key_vault_secret.dev_portal_client_id.value}"
-      # TF_VAR_DEV_PORTAL_CLIENT_SECRET = "${data.azurerm_key_vault_secret.dev_portal_client_secret.value}"
+      TF_VAR_DEV_PORTAL_CLIENT_ID     = "${data.azurerm_key_vault_secret.dev_portal_client_id.value}"
+      TF_VAR_DEV_PORTAL_CLIENT_SECRET = "${data.azurerm_key_vault_secret.dev_portal_client_secret.value}"
     }
   }
 }

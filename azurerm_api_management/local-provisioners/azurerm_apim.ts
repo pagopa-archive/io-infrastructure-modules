@@ -13,7 +13,7 @@
 
 import * as t from "io-ts";
 
-import { reporter } from "io-ts-reporters";
+// import { reporter } from "io-ts-reporters";
 
 import * as winston from "winston";
 
@@ -31,9 +31,10 @@ import * as shelljs from "shelljs";
 import * as tmp from "tmp";
 import * as url from "url";
 
-import { left } from "fp-ts/lib/Either";
+// import { left } from "fp-ts/lib/Either";
 
-import * as replaceInFiles from "replace-in-file";
+// import * as replaceInFiles from "replace-in-file";
+import replaceInFiles from "replace-in-file";
 import {
   CONF_DIR,
   getObjectFromJson,
@@ -247,11 +248,12 @@ export const run = async (params: ApimParams) => {
   const config = readConfig(
     params.environment,
     path.join(...CONF_DIR, ...params.apim_configuration_path.split("/"))
-  ).getOrElseL(errs => {
-    throw new Error(
-      "Error parsing configuration:\n\n" + reporter(left(errs) as any)
-    );
-  });
+    // ).getOrElseL(errs => {
+    //   throw new Error(
+    //     "Error parsing configuration:\n\n" + reporter(left(errs) as any)
+    //   );
+    // }
+  );
 
   const loginCreds = await login();
 

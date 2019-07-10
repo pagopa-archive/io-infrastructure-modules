@@ -10,7 +10,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "strictFunctionTypes": true,
-    "sourceMap": true
+    "sourceMap": true,
   },
   "exclude": [
     "lib/**/local.*",

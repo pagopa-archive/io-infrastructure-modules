@@ -35,8 +35,7 @@ const TF_VARS_FILE_NAME = "tfvars.json";
 // Path to the directory with configuration files
 export const CONF_DIR: ReadonlyArray<any> = [
   __dirname,
-  "..",
-  "."
+  ".."
 ];
 
 const Api = t.interface({
