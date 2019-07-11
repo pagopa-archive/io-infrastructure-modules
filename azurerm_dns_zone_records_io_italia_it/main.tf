@@ -4,13 +4,23 @@ data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
 
+data "azurerm_resource_group" "aks_rg" {
+  name = "${var.kubernetes_resource_group_name}"
+}
+
 data "azurerm_dns_zone" "dns_zone" {
   name                = "${local.azurerm_dns_zone_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  resource_group_name = "agid-rg-prod"
+  # resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
 data "azurerm_public_ip" "kubernetes_public_ip" {
-  name                = "${local.azurerm_public_ip_name}"
+  name                = "${local.kubernetes_public_ip_name}"
+  resource_group_name = "${data.azurerm_resource_group.aks_rg.name}"
+}
+
+data "azurerm_public_ip" "vpn_dev_public_ip" {
+  name                = "${local.vpn_dev_public_ip_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
@@ -40,6 +50,19 @@ resource "azurerm_dns_cname_record" "kubernetes_cname_records" {
 }
 
 # Kubernetes end
+
+# Mgmt start
+
+# dev VPN
+resource "azurerm_dns_a_record" "vpn_dev_a_record" {
+  name                = "${var.vpn_dev_host_name}"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  records             = ["${data.azurerm_public_ip.vpn_dev_public_ip.ip_address}"]
+}
+
+# Mgmt end
 
 # Developers portal start
 

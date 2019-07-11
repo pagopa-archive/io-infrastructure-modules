@@ -14,8 +14,20 @@ variable "resource_name_prefix" {
 
 # DNS module specific variables
 
-variable "azurerm_public_ip_name" {
+variable "kubernetes_resource_group_name" {
+  description = "The resource group of the kubernetes cluster."
+}
+
+variable "kubernetes_public_ip_name" {
   description = "The name suffix of the public IP address to allocate."
+}
+
+variable "vpn_dev_public_ip_name" {
+  description = "The name suffix of the public IP address to allocate."
+}
+
+variable "vpn_dev_host_name" {
+  description = "The host name of the dev VPN server."
 }
 
 variable "dns_zone_prefix" {
@@ -66,7 +78,8 @@ variable "mailup_cname_records" {
 }
 
 locals {
-  azurerm_public_ip_name                     = "${var.resource_name_prefix}-${var.environment}-pip-${var.azurerm_public_ip_name}"
+  kubernetes_public_ip_name                  = "${var.resource_name_prefix}-${var.environment}-pip-${var.kubernetes_public_ip_name}"
+  vpn_dev_public_ip_name                     = "${var.resource_name_prefix}-${var.environment}-pip-${var.vpn_dev_public_ip_name}"
   private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${var.dns_zone_suffix}"
   azurerm_dns_zone_name                      = "${var.dns_zone_prefix != "" ? local.private_prefix_environment_dns_zone_suffix : var.dns_zone_suffix}"
   # Define resource names based on the following convention:
