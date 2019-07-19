@@ -64,37 +64,6 @@ resource "azurerm_api_management_property" "properties" {
   secret              = "${lookup(var.apim_properties[count.index],"secret","false")}"
 }
 
-# module "azurerm_api_management_backendUrl" {
-#   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-#   api_version         = "2019-01-01"
-#   type                = "Microsoft.ApiManagement/service/properties"
-#   name                = "${local.azurerm_apim_name}/backendUrl"
-#   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-#   location            = "${var.location}"
-#   enable_output       = false
-
-#   random_deployment_name = true
-
-#   properties {
-#     tags = [
-#       "${var.environment}",
-#     ]
-
-#     secret      = "false"
-#     displayName = "backendUrl"
-#     value       = "${var.backendUrl}"
-#   }
-
-#   sku {
-#     name     = "${var.sku_name}"
-#     capacity = "${var.sku_capacity}"
-#   }
-
-#   tags = {
-#     environment = "${var.environment}"
-#   }
-# }
-
 resource "azurerm_api_management_group" "groups" {
   count               = "${length(var.apim_groups)}"
   name                = "${lookup(var.apim_groups[count.index],"name")}"
@@ -145,19 +114,12 @@ resource "azurerm_api_management_api" "apis" {
   # }
 }
 
-# resource "azurerm_api_management_api" "apis" {
-#   name                = "openapi-specs"
-#   api_management_name = "${local.azurerm_apim_name}"
-#   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-#   revision            = "1"
-#   display_name        = "OpenAPI Specs"
-#   path                = "specs/api/v1"
-#   protocols           = ["https"]
-# }
+resource "azurerm_api_management_product_api" "apim_product_api_bindings" {
+  count      = "${length(var.apim_product_api_bindings)}"
+  api_name   = "${lookup(var.apim_product_api_bindings[count.index],"api_name")}"
+  product_id = "${azurerm_api_management_product.products.id}"
 
-resource "azurerm_api_management_product_api" "apis_product" {
-  api_name            = "${azurerm_api_management_api.apis.name}"
-  product_id          = "${azurerm_api_management_product.products.id}"
+  product_id          = "${lookup(var.apim_product_api_bindings[count.index],"product_id")}"
   api_management_name = "${local.azurerm_apim_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }

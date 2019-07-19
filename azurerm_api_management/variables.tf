@@ -126,3 +126,8 @@ variable "apim_properties" {
   description = "Api Properties products."
   default     = []
 }
+
+variable "apim_product_api_bindings" {
+  description = "Api product binding."
+  default     = []
+}
