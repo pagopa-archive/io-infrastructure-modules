@@ -122,6 +122,7 @@ variable "apim_products" {
   default     = []
 }
 
-variable "backendUrl" {
-  description = "URL of the function backend"
+variable "apim_properties" {
+  description = "Api Properties products."
+  default     = []
 }
