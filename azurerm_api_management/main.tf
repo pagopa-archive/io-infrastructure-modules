@@ -89,14 +89,14 @@ resource "azurerm_api_management_product" "products" {
 
 resource "azurerm_api_management_product_policy" "product_policies" {
   count               = "${length(var.apim_product_policies)}"
-  product_id          = "${lookup(var.apim_product_policies[count.index],"id")}"
+  product_id          = "${lookup(var.apim_product_policies[count.index],"product_id")}"
   api_management_name = "${local.azurerm_apim_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 
   xml_content = "${lookup(var.apim_product_policies[count.index],"xml_content")}"
 }
 
-resource "azurerm_api_management_api" "apis" {
+resource "azurerm_api_management_api" "apim_apis" {
   count               = "${length(var.apim_apis)}"
   name                = "${lookup(var.apim_apis[count.index],"name")}"
   api_management_name = "${local.azurerm_apim_name}"
@@ -124,35 +124,31 @@ resource "azurerm_api_management_product_api" "apim_product_api_bindings" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
-resource "azurerm_api_management_api_operation" "operation" {
-  operation_id        = "createService"
-  api_name            = "${azurerm_api_management_api.apis.name}"
+resource "azurerm_api_management_api_operation" "apim_api_operations" {
+  count               = "${length(var.apim_api_operations)}"
+  operation_id        = "${lookup(var.apim_api_operations[count.index],"operation_id")}"
+  api_name            = "${lookup(var.apim_api_operations[count.index],"api_name")}"
   api_management_name = "${local.azurerm_apim_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  display_name        = "Delete User Operation"
-  method              = "POST"
-  url_template        = "/adm/services"
-  description         = "This can only be done by the logged in user."
+  display_name        = "${lookup(var.apim_api_operations[count.index],"display_name","${lookup(var.apim_api_operations[count.index],"api_name")}")}"
+  method              = "${lookup(var.apim_api_operations[count.index],"method","GET")}"
+  url_template        = "${lookup(var.apim_api_operations[count.index],"url_template")}"
+  description         = "${lookup(var.apim_apis[count.index],"description","---")}"
 
-  response {
-    status_code = 200
-  }
+  # response           = {}
+  # request            = {}
+  # template_parameter = {}
 }
 
 ## 27868
-resource "azurerm_api_management_api_operation_policy" "example" {
-  api_name            = "${azurerm_api_management_api_operation.example.api_name}"
-  api_management_name = "${azurerm_api_management_api_operation.example.api_management_name}"
-  resource_group_name = "${azurerm_api_management_api_operation.example.resource_group_name}"
-  operation_id        = "${azurerm_api_management_api_operation.example.operation_id}"
+resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policies" {
+  count               = "${length(var.apim_api_operation_policies)}"
+  api_name            = "${lookup(var.apim_api_operation_policies[count.index],"api_name")}"
+  api_management_name = "${local.azurerm_apim_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  operation_id        = "${lookup(var.apim_api_operation_policies[count.index],"operation_id")}"
 
-  xml_content = <<XML
-<policies>
-  <inbound>
-    <find-and-replace from="xyz" to="abc" />
-  </inbound>
-</policies>
-XML
+  xml_content = "${lookup(var.apim_api_operation_policies[count.index],"xml_content")}"
 }
 
 # "type": "Microsoft.ApiManagement/service/identityProviders

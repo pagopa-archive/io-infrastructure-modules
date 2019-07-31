@@ -121,6 +121,10 @@ variable "apim_products" {
   description = "Api Management products."
   default     = []
 }
+variable "apim_apis" {
+  description = "Apis."
+  default     = []
+}
 
 variable "apim_properties" {
   description = "Api Properties products."
@@ -129,5 +133,17 @@ variable "apim_properties" {
 
 variable "apim_product_api_bindings" {
   description = "Api product binding."
+  default     = []
+}
+variable "apim_api_operations" {
+  description = "Api Operation policy."
+  default     = []
+}
+variable "apim_api_operation_policies" {
+  description = "Api Operation policy."
+  default     = []
+}
+variable "apim_product_policies" {
+  description = "Api Operation policy."
   default     = []
 }
