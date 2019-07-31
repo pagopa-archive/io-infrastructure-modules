@@ -106,7 +106,7 @@ resource "azurerm_api_management_api" "apim_apis" {
   description  = "${lookup(var.apim_apis[count.index],"description","---")}"
   revision     = "${lookup(var.apim_apis[count.index],"revision","1")}"
   path         = "${lookup(var.apim_apis[count.index],"path","api/v1")}"
-  protocols    = ["${lookup(var.apim_apis[count.index],"protocols","https")}"]
+  protocols    = ["${split(",",lookup(var.apim_apis[count.index],"protocols","https"))}"]
 
   # import {
   #   content_format = "swagger-link-json"
