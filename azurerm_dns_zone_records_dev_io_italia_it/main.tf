@@ -44,3 +44,15 @@ resource "azurerm_dns_cname_record" "kubernetes_cname_records" {
 }
 
 # Kubernetes end
+
+# Redis records start
+
+resource "azurerm_dns_a_record" "redis_a_record" {
+  name                = "redis"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  records             = ["172.16.48.254"]
+}
+
+# Redis records end
