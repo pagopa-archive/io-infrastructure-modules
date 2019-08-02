@@ -42,7 +42,7 @@ variable "add_environment" {
 
 locals {
   environment_dns_zone_suffix                = "${var.environment}.${var.dns_zone_suffix}"
-  dns_zone_suffix                            = "${var.add_environment == true ? local.environment_dns_zone_suffix : var.dns_zone_suffix}"
+  dns_zone_suffix                            = "${var.add_environment ? local.environment_dns_zone_suffix : var.dns_zone_suffix}"
   private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${local.dns_zone_suffix}"
   azurerm_virtual_network_registration_name  = "${formatlist("%s-%s-vnet-%s", var.resource_name_prefix, var.environment, var.registration_vnets)}"
   azurerm_virtual_network_resolution_name    = "${formatlist("%s-%s-vnet-%s", var.resource_name_prefix, var.environment, var.resolution_vnets)}"
