@@ -20,7 +20,7 @@ resource "null_resource" "azurerm_apim_logger" {
       "ts-node ${var.apim_logger_provisioner}",
       "--environment ${var.environment}",
       "--azurerm_resource_group ${var.resource_group_name}",
-      "--azurerm_apim ${local.azurerm_apim_name}",
+      "--azurerm_apim "${local.azurerm_apim_name}"",
       "--azurerm_apim_eventhub ${azurerm_eventhub.azurerm_apim_eventhub.name}",
       "--apim_configuration_path ${var.apim_configuration_path}",
       "--azurerm_apim_eventhub_connstr ${azurerm_eventhub_authorization_rule.azurerm_apim_eventhub_rule.primary_connection_string}"))
