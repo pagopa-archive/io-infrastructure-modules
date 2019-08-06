@@ -36,6 +36,6 @@ variable "azurerm_app_service_plan_sku_capacity" {
 }
 
 locals {
-  azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-${var.azurerm_app_service_plan_suffix}"
+  azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-serviceplan-${var.azurerm_app_service_plan_suffix}"
   azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
 }
