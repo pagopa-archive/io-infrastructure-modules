@@ -63,27 +63,27 @@ module "azurerm_function_app_VirtualNetwork" {
   }
 }
 
-module "azurerm_function_app_VirtualNetworkConnections" {
-  source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-  api_version = "2015-08-01"
-  type        = "Microsoft.Web/sites/virtualNetworkConnections"
+# module "azurerm_function_app_VirtualNetworkConnections" {
+#   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+#   api_version = "2015-08-01"
+#   type        = "Microsoft.Web/sites/virtualNetworkConnections"
 
-  enable_output       = false
-  name                = "${local.azurerm_functionapp_name}/${data.azurerm_virtual_network.vnet.name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  location            = "${data.azurerm_resource_group.rg.location}"
+#   enable_output       = false
+#   name                = "${local.azurerm_functionapp_name}/${data.azurerm_virtual_network.vnet.name}"
+#   resource_group_name = "${data.azurerm_resource_group.rg.name}"
+#   location            = "${data.azurerm_resource_group.rg.location}"
 
-  random_deployment_name = true
+#   random_deployment_name = true
 
-  tags = {
-    environment = "${var.environment}"
-  }
+#   tags = {
+#     environment = "${var.environment}"
+#   }
 
-  properties {
-    vnetResourceId = "${data.azurerm_virtual_network.vnet.id}"
-    isSwift        = "true"
-  }
-}
+#   properties {
+#     vnetResourceId = "${data.azurerm_virtual_network.vnet.id}"
+#     isSwift        = "true"
+#   }
+# }
 
 module "azurerm_function_app_sourcecontrols" {
   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
