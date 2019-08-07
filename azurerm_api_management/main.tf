@@ -1,6 +1,9 @@
 # API management
-## Create and configure the API management service
+
+# Create and configure the API management service
+
 # Existing infrastructure
+
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
@@ -15,6 +18,8 @@ data "azurerm_subnet" "apim_subnet" {
   virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
+
+# New infrastructure
 
 module "azurerm_api_management" {
   source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"

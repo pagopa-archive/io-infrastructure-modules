@@ -14,16 +14,6 @@ variable "apim_name" {
   description = "The API Management name."
 }
 
-locals {
-  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_apim_name           = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-
-  # azurerm_apim_scmurl          = "https://${var.resource_name_prefix}-apim-${var.environment}.scm.azure-api.net/"
-  azurerm_virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
-  azurerm_subnet_name          = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
-}
-
 variable "notification_sender_email" {
   type        = "string"
   description = "Email address from which the notification will be sent."
@@ -77,4 +67,12 @@ variable "vnet_name" {
 variable "subnet_name" {
   description = "The subnet name used by API management"
   default     = ""
+}
+
+locals {
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
+  azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_apim_name            = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
+  azurerm_virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name          = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
 }

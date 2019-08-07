@@ -14,13 +14,6 @@ variable "apim_name" {
   description = "The API Management name."
 }
 
-locals {
-  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name            = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_apim_name                      = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-  api_managemente_default_product_policy = "${file("default_product_policy.xml")}"
-}
-
 variable "apim_products" {
   description = "Api products."
   default     = []
@@ -29,4 +22,12 @@ variable "apim_products" {
 variable "apim_product_api_bindings" {
   description = "Product-Api bindings."
   default     = []
+}
+
+
+locals {
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
+  azurerm_resource_group_name            = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_apim_name                      = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
+  api_managemente_default_product_policy = "${file("default_product_policy.xml")}"
 }

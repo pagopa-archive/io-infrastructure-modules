@@ -1,6 +1,9 @@
 # API management
-## Create and configure the API management service
+
+# Create and configure the API management service
+
 # Existing infrastructure
+
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
@@ -10,8 +13,7 @@ data "azurerm_api_management" "api_management" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
-  count               = "${length(var.apim_product_api_bindings)}"
-  api_name            = "${lookup(var.apim_product_api_bindings[count.index],"api_name")}"
+# New infrastructure
 
 resource "azurerm_api_management_product" "products" {
   count                 = "${length(var.apim_products)}"

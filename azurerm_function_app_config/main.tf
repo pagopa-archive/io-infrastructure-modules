@@ -19,27 +19,6 @@ data "azurerm_subnet" "functions_subnet" {
 # Microsoft Support Request Number: 119062622001983
 # Pivotal tracker link: https://www.pivotaltracker.com/story/show/167019950
 
-# module "azurerm_function_app_web" {
-#   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-#   api_version = "2016-08-01"
-#   type        = "Microsoft.Web/sites/config"
-
-#   enable_output       = false
-#   name                = "${local.azurerm_functionapp_name}/web"
-#   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-#   location            = "${data.azurerm_resource_group.rg.location}"
-
-#   random_deployment_name = true
-
-#   tags = {
-#     environment = "${var.environment}"
-#   }
-
-#   properties {
-#     vnetName = "${data.azurerm_virtual_network.vnet.name}"
-#   }
-# }
-
 module "azurerm_function_app_VirtualNetwork" {
   source      = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
   api_version = "2018-02-01"

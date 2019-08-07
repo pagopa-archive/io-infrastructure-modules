@@ -1,6 +1,9 @@
 # API management
-## Create and configure the API management service
+
+# Create and configure the API management service
+
 # Existing infrastructure
+
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
