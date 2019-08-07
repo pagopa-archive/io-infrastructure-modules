@@ -9,10 +9,7 @@ resource "azurerm_key_vault" "key_vault" {
   location                  = "${data.azurerm_resource_group.rg.location}"
   resource_group_name       = "${data.azurerm_resource_group.rg.name}"
   tenant_id                 = "${var.azurerm_key_vault_tenant_id}"
-
-  sku {
-    name = "standard"
-  }
+  sku_name                  = "standard"
 
   tags = {
     environment = "${var.environment}"
