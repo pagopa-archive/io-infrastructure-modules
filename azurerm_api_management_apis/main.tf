@@ -37,7 +37,40 @@ resource "azurerm_api_management_api_operation" "apim_api_operations" {
   display_name        = "${lookup(var.apim_api_operations[count.index],"display_name","${lookup(var.apim_api_operations[count.index],"api_name")}")}"
   method              = "${lookup(var.apim_api_operations[count.index],"method","GET")}"
   url_template        = "${lookup(var.apim_api_operations[count.index],"url_template")}"
-  description         = "${lookup(var.apim_apis[count.index],"description","---")}"
+  description         = "${lookup(var.apim_api_operations[count.index],"description","---")}"
+
+  # template_parameter = ["${element(data.external.apim_api_operations_template_parameter.*.result,count.index)}"]
+  # template_parameter = ["${lookup(element(data.external.apim_api_operations_template_parameter.*.result,count.index),"name","") != ""? list(element(data.external.apim_api_operations_template_parameter.*.result,count.index)) : "" }"]
+  ## template_parameter = ["${element(data.external.apim_api_operations_template_parameter.*.result,count.index)}"]
+
+  # "templateParameters": [
+  #                   {
+  #                       "name": "serviceId",
+  #                       "required": true,
+  #                       "values": [],
+  #                       "type": "[parameters('operations_5a05960ad812e699f31de771_type')]"
+  #                   }
+  #               ]
+}
+
+# output "test" {
+#   value = "${data.null_data_source.apim_api_operations_template_parameter.*.outputs["template_parameter"]}"
+# }
+
+# data "null_data_source" "apim_api_operations_template_parameter" {
+#   count = "${length(var.apim_api_operations)}"
+
+#   inputs = {
+#     template_parameter = "${lookup(var.apim_api_operations[count.index],"template_parameter","[]")}"
+#   }
+# }
+data "external" "apim_api_operations_template_parameter" {
+  count   = "${length(var.apim_api_operations)}"
+  program = ["echo", "${lookup(var.apim_api_operations[count.index],"template_parameter","{}")}"]
+}
+
+output "value1" {
+  value = "${data.external.apim_api_operations_template_parameter.*.result}"
 }
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policies" {
