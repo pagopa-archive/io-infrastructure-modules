@@ -30,5 +30,5 @@ locals {
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
 
   azurerm_apim_name                      = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-  api_managemente_default_product_policy = "${file("default_product_policy.xml")}"
+  api_management_default_product_policy = "${file("default_product_policy.xml")}"
 }

@@ -46,5 +46,5 @@ resource "azurerm_api_management_api_operation_policy" "apim_api_operation_polic
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   operation_id        = "${element(azurerm_api_management_api_operation.apim_api_operations.*.operation_id , index(azurerm_api_management_api_operation.apim_api_operations.*.operation_id, lookup(var.apim_api_operations[count.index],"operation_id")))}"
-  xml_content         = "${lookup(var.apim_api_operations[count.index],"xml_content")}"
+  xml_content         = "${lookup(var.apim_api_operations[count.index],"xml_content","${local.api_management_default_api_operation_policy}")}"
 }

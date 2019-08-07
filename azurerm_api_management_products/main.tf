@@ -28,12 +28,20 @@ resource "azurerm_api_management_product" "products" {
   published             = "${lookup(var.apim_products[count.index],"published","true")}"
 }
 
+resource "azurerm_api_management_product_group" "product_groups" {
+  count               = "${length(var.apim_products)}"
+  product_id          = "${lookup(var.apim_products[count.index],"id")}"
+  group_name          = "${lookup(var.apim_products[count.index],"admin_group","administrators")}"
+  api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
 resource "azurerm_api_management_product_policy" "product_policies" {
   count               = "${length(var.apim_products)}"
   product_id          = "${basename(element(azurerm_api_management_product.products.*.product_id,count.index))}"
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  xml_content         = "${lookup(var.apim_products[count.index],"xml_content","${local.api_managemente_default_product_policy}")}"
+  xml_content         = "${lookup(var.apim_products[count.index],"xml_content","${local.api_management_default_product_policy}")}"
 }
 
 resource "azurerm_api_management_product_api" "apim_product_api_bindings" {
