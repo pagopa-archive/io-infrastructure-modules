@@ -1,5 +1,5 @@
 variable "environment" {
-  description = "The nick name identifying the type of environment (i.e. test, staging, production)"
+  description = "The nick name identifying the type of environment (i.e. test, staging, production)."
 }
 
 variable "location" {

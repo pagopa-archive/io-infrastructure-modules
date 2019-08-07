@@ -18,6 +18,8 @@ data "azurerm_api_management" "api_management" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+# New infrastructure
+
 resource "azurerm_api_management_property" "properties" {
   count               = "${length(var.apim_properties)}"
   name                = "${lookup(var.apim_properties[count.index],"name")}"

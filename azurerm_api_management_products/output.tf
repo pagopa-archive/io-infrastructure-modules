@@ -1,5 +1,4 @@
-# output "id" {
-#   description = "The Azure resource group id"
-#   value       = "${module.azurerm_api_management.id}"
-# }
-
+output "products" {
+  description = "The API Management products"
+  value       = "${azurerm_api_management_product.products.*.product_id}"
+}

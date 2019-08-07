@@ -38,10 +38,6 @@ resource "azurerm_api_management_api_operation" "apim_api_operations" {
   method              = "${lookup(var.apim_api_operations[count.index],"method","GET")}"
   url_template        = "${lookup(var.apim_api_operations[count.index],"url_template")}"
   description         = "${lookup(var.apim_apis[count.index],"description","---")}"
-
-  # response           = {}
-  # request            = {}
-  # template_parameter = {}
 }
 
 resource "azurerm_api_management_api_operation_policy" "apim_api_operation_policies" {
@@ -49,6 +45,6 @@ resource "azurerm_api_management_api_operation_policy" "apim_api_operation_polic
   api_name            = "${lookup(var.apim_api_operations[count.index],"api_name")}"
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  operation_id = "${element(azurerm_api_management_api_operation.apim_api_operations.*.operation_id , index(azurerm_api_management_api_operation.apim_api_operations.*.operation_id, lookup(var.apim_api_operations[count.index],"operation_id")))}"
-  xml_content  = "${lookup(var.apim_api_operations[count.index],"xml_content")}"
+  operation_id        = "${element(azurerm_api_management_api_operation.apim_api_operations.*.operation_id , index(azurerm_api_management_api_operation.apim_api_operations.*.operation_id, lookup(var.apim_api_operations[count.index],"operation_id")))}"
+  xml_content         = "${lookup(var.apim_api_operations[count.index],"xml_content")}"
 }

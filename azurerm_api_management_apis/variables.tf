@@ -1,5 +1,5 @@
 variable "environment" {
-  description = "The nick name identifying the type of environment (i.e. test, staging, production)"
+  description = "The nick name identifying the type of environment (i.e. test, staging, production)."
 }
 
 variable "location" {
@@ -15,15 +15,14 @@ variable "apim_name" {
 }
 
 variable "apim_apis" {
-  description = "Apis."
+  description = "APIs."
   default     = []
 }
 
 variable "apim_api_operations" {
-  description = "Api operations."
+  description = "API operations."
   default     = []
 }
-
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}

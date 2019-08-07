@@ -29,9 +29,7 @@ resource "azurerm_api_management_product" "products" {
 }
 
 resource "azurerm_api_management_product_policy" "product_policies" {
-  count = "${length(var.apim_products)}"
-
-  # product_id          = "${basename(element(azurerm_api_management_product.products.*.id,count.index))}"
+  count               = "${length(var.apim_products)}"
   product_id          = "${basename(element(azurerm_api_management_product.products.*.product_id,count.index))}"
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
