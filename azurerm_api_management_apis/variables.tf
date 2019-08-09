@@ -24,6 +24,11 @@ variable "apim_api_operations" {
   default     = []
 }
 
+variable "apim_api_operation_policies" {
+  description = "API operation policies."
+  default     = []
+}
+
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
