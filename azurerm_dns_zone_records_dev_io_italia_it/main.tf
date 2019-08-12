@@ -44,3 +44,15 @@ resource "azurerm_dns_cname_record" "kubernetes_cname_records" {
 }
 
 # Kubernetes end
+
+# APIM start
+
+resource "azurerm_dns_cname_record" "apim_cname_record" {
+  name                = "api"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  record              = "io-dev-apim-01.azure-api.net"
+}
+
+# APIM end
