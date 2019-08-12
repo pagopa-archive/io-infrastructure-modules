@@ -33,6 +33,4 @@ locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_apim_name           = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-
-  api_management_default_api_operation_policy = "${file("default_api_operation_policy.xml")}"
 }
