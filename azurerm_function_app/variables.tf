@@ -38,12 +38,17 @@ variable "functionapp_connection_strings" {
   description = "Includes the authentication information required for your application to access data in an Azure Storage account at runtime using Shared Key authorization."
 }
 
+variable "https_only" {
+  default     = "true"
+  description = "Force HTTPS in Azure Functions."
+}
+
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_functionapp_name      = "${var.resource_name_prefix}-${var.environment}-fn-${var.functionapp_name}"
   azurerm_app_service_plan_name = "${var.resource_name_prefix}-${var.environment}-serviceplan-${var.plan_name}"
 
-  azurerm_storage_account_name  = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
-  azurerm_key_vault_name        = "${var.resource_name_prefix}-${var.environment}-keyvault"
+  azurerm_storage_account_name = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
+  azurerm_key_vault_name       = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }
