@@ -42,10 +42,15 @@ variable "cosmosdb_account_name" {
   description = "Cosmos DB account name."
 }
 
+variable "container_throughput" {
+  description = "The throughput to assign to the container."
+  default     = "400"
+}
+
 locals {
   # Define resource names based on the following convention:  {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
 
   azurerm_resource_group_name      = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_cosmosdb_account_name    = "${var.resource_name_prefix}-${var.environment}-cosmosdb-${var.cosmosdb_account_name}"
-  azurerm_cosmosdb_documentdb_name = "${var.resource_name_prefix}-documentdb-${var.environment}"
+  azurerm_cosmosdb_documentdb_name = "${var.resource_name_prefix}-${var.environment}-sqldb-${var.documentdb_name}"
 }
