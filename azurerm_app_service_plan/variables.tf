@@ -15,24 +15,29 @@ variable "resource_name_prefix" {
 # App service plan specific variables
 
 variable "azurerm_app_service_plan_sku_tier" {
-  description = "The sku tier associated with App service plan"
+  description = "The sku tier associated with App service plan."
 }
 
 variable "azurerm_app_service_plan_sku_size" {
-  description = "The sku size of the App service plan"
+  description = "The sku size of the App service plan."
 }
 
 variable "azurerm_app_service_plan_kind" {
-  description = "The kind of the App Service Plan to create"
+  description = "The kind of the App Service Plan to create."
 }
 
 variable "azurerm_app_service_plan_suffix" {
-  description = "The App service plan suffix name"
+  description = "The App service plan suffix name."
 }
 
 variable "azurerm_app_service_plan_sku_capacity" {
-  description = "The number of workers associated with this App Service Plan"
+  description = "The min number of workers associated with this App Service Plan."
   default     = ""
+}
+
+variable "azurerm_app_service_plan_maximum_elastic_worker_count" {
+  description = "The maximum number of workers associated with this App Service Plan."
+  default     = "1"
 }
 
 locals {

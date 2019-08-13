@@ -17,4 +17,6 @@ resource "azurerm_app_service_plan" "app_service_plan" {
     size     = "${var.azurerm_app_service_plan_sku_size}"
     capacity = "${var.azurerm_app_service_plan_sku_capacity}"
   }
+
+  maximum_elastic_worker_count = "${var.azurerm_app_service_plan_maximum_elastic_worker_count}"
 }
