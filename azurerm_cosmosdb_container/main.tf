@@ -46,23 +46,24 @@ module "azurerm_cosmosdb_sql_container" {
   }
 }
 
-# module "azurerm_cosmosdb_sql_container_throughput" {
-#   source                 = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-#   api_version            = "2016-03-31"
-#   type                   = "Microsoft.DocumentDB/databaseAccounts/apis/databases/containers/settings"
-#   enable_output          = false
-#   name                   = "${data.azurerm_cosmosdb_account.cosmosdb_account.name}/sql/${local.azurerm_cosmosdb_documentdb_name}/${var.container_name}/throughput"
-#   resource_group_name    = "${data.azurerm_resource_group.rg.name}"
-#   location               = "${var.location}"
-#   random_deployment_name = true
+module "azurerm_cosmosdb_sql_container_throughput" {
+  source                 = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+  api_version            = "2016-03-31"
+  type                   = "Microsoft.DocumentDB/databaseAccounts/apis/databases/containers/settings"
+  enable_output          = false
+  name                   = "${data.azurerm_cosmosdb_account.cosmosdb_account.name}/sql/${local.azurerm_cosmosdb_documentdb_name}/${var.container_name}/throughput"
+  resource_group_name    = "${data.azurerm_resource_group.rg.name}"
+  location               = "${var.location}"
+  random_deployment_name = true
+  depends_on             = ["${module.azurerm_cosmosdb_sql_container.template_deployment_id}"]
 
-#   tags = {
-#     environment = "${var.environment}"
-#   }
+  tags = {
+    environment = "${var.environment}"
+  }
 
-#   properties {
-#     resource {
-#       throughput = "${var.container_throughput}"
-#     }
-#   }
-# }
+  properties {
+    resource {
+      throughput = "${var.container_throughput}"
+    }
+  }
+}

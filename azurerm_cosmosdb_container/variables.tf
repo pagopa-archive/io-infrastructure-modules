@@ -44,7 +44,7 @@ variable "cosmosdb_account_name" {
 
 variable "container_throughput" {
   description = "The throughput to assign to the container."
-  default     = 400
+  default     = "400"
 }
 
 locals {
