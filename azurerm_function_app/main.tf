@@ -99,7 +99,7 @@ module "azurerm_function_app_site" {
       ]
     }
 
-    httpsOnly    = "false"
+    httpsOnly    = "${var.https_only}"
     serverFarmId = "${data.azurerm_app_service_plan.sp.id}"
   }
 }
