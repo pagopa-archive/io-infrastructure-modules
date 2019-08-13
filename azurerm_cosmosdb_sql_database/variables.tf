@@ -28,5 +28,5 @@ locals {
 
   azurerm_resource_group_name      = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_cosmosdb_account_name    = "${var.resource_name_prefix}-${var.environment}-cosmosdb-${var.cosmosdb_account_name}"
-  azurerm_cosmosdb_documentdb_name = "${var.resource_name_prefix}-documentdb-${var.environment}"
+  azurerm_cosmosdb_documentdb_name = "${var.resource_name_prefix}-${var.environment}-sqldb-${var.documentdb_name}"
 }
