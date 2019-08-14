@@ -36,8 +36,18 @@ variable "apim_groups" {
   default     = []
 }
 
-variable "apim_properties" {
-  description = "Api Properties products."
+variable "apim_named_values" {
+  description = "Api named values."
+  default     = []
+}
+
+variable "apim_secret_named_values" {
+  description = "Api secret named values."
+  default     = []
+}
+
+variable "apim_users" {
+  description = "Api user list."
   default     = []
 }
 
@@ -46,4 +56,5 @@ locals {
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_apim_name           = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
   azurerm_function_app_name   = "${var.resource_name_prefix}-${var.environment}-fn-${var.function_app_name}"
+  azurerm_key_vault_name      = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }
