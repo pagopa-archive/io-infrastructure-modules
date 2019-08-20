@@ -27,6 +27,7 @@ data "azurerm_key_vault_secret" "notification_hub_token_id" {
   name         = "nhub01token"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
+
 # New infrastructure
 
 resource "azurerm_notification_hub_namespace" "notification_hub_ns" {
@@ -46,7 +47,7 @@ resource "azurerm_notification_hub" "notification_hub" {
 
   apns_credential {
     application_mode = "${var.azurerm_notification_hub_apns_credential_application_mode}"
-    bundle_id        = "${data.azurerm_key_vault_secret.notification_hub_bundle_id.value}" # 
+    bundle_id        = "${data.azurerm_key_vault_secret.notification_hub_bundle_id.value}"
     key_id           = "${data.azurerm_key_vault_secret.notification_hub_key_id.value}"
     team_id          = "${data.azurerm_key_vault_secret.notification_hub_team_id.value}"
     token            = "${data.azurerm_key_vault_secret.notification_hub_token_id.value}"
