@@ -50,6 +50,16 @@ variable "azurerm_network_security_rules" {
   description = "The list of network security rules."
 }
 
+variable "set_subnet_delegation" {
+  description = "If set to true sets the subnet delegation."
+  default     = false
+}
+
+variable "azurerm_subnet_delegation_name" {
+  description = "The optional subnet delegation name to set if set_subnet_delegation is set to true (possible values: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql and Microsoft.Storage)."
+  default     = ""
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
