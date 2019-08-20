@@ -14,14 +14,14 @@ variable "resource_name_prefix" {
 
 # App service plan specific variables
 
-variable "azurerm_app_insights_name" {
+variable "azurerm_application_insights_name" {
   description = "The value that will be used as suffix to identify the app insights resource."
 }
-variable "azurerm_app_insights_application_type" {
+variable "azurerm_application_insights_application_type" {
   description = "the type of Application Insights."
 }
 
 locals {
     azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
-    azurerm_app_insights_name     = "${var.resource_name_prefix}-${var.environment}-ai-${var.azurerm_app_insights_name}"
+    azurerm_application_insights_name     = "${var.resource_name_prefix}-${var.environment}-ai-${var.azurerm_application_insights_name}"
 }
