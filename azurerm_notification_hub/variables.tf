@@ -20,6 +20,9 @@ variable "notification_hub_name" {
 variable "azurerm_notification_hub_namespace_sku_name" {
   description = "The SKU name of the notification hub namespace."
 }
+variable "azurerm_notification_hub_apns_application_mode" {
+  description = "The Application Mode which defines which server the APNS Messages should be sent to."
+}
 
 locals {
   # Define resource names based on the following convention:
@@ -27,4 +30,5 @@ locals {
   azurerm_resource_group_name             = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_notification_hub_namespace_name = "${var.resource_name_prefix}-${var.environment}-nhns-${var.notification_hub_name}"
   azurerm_notification_hub_name           = "${var.resource_name_prefix}-${var.environment}-nh-${var.notification_hub_name}"
+  azurerm_key_vault_name                  = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }
