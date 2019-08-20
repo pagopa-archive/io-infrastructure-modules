@@ -20,7 +20,8 @@ variable "notification_hub_name" {
 variable "azurerm_notification_hub_namespace_sku_name" {
   description = "The SKU name of the notification hub namespace."
 }
-variable "azurerm_notification_hub_apns_application_mode" {
+
+variable "azurerm_notification_hub_apns_credential_application_mode" {
   description = "The Application Mode which defines which server the APNS Messages should be sent to."
 }
 

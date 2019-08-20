@@ -45,7 +45,7 @@ resource "azurerm_notification_hub" "notification_hub" {
   location            = "${data.azurerm_resource_group.rg.location}"
 
   apns_credential {
-    application_mode = "${var.azurerm_notification_hub_apns_application_mode}" 
+    application_mode = "${var.azurerm_notification_hub_apns_credential_application_mode}"
     bundle_id        = "${data.azurerm_key_vault_secret.notification_hub_bundle_id.value}" # 
     key_id           = "${data.azurerm_key_vault_secret.notification_hub_key_id.value}"
     team_id          = "${data.azurerm_key_vault_secret.notification_hub_team_id.value}"
