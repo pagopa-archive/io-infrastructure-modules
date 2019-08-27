@@ -42,7 +42,7 @@ variable "azurerm_storage_account_network_rules_allowed_ips" {
 }
 
 variable "azurerm_storage_account_network_rules_default_action" {
-  description = "Specifies the default action of allow or deny when no other rules match"
+  description = "Specifies whether to allow or deny when no other rules match."
   default     = "Deny"
 }
 
