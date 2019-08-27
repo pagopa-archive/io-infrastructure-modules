@@ -29,17 +29,23 @@ variable "set_firewall" {
   default = true
 }
 
-variable "allowed_subnets" {
+variable "azurerm_storage_account_network_rules_allowed_subnets" {
   description = "The list of subnets allowed to access the storage account"
   type        = "list"
   default     = []
 }
 
-variable "allowed_ips" {
+variable "azurerm_storage_account_network_rules_allowed_ips" {
   description = "The list of IPs allowed to access the storage account"
   type        = "list"
   default     = []
 }
+
+variable "azurerm_storage_account_network_rules_default_action" {
+  description = "Specifies whether to allow or deny when no other rules match."
+  default     = "Deny"
+}
+
 
 locals {
   # Define resource names based on the following convention:
