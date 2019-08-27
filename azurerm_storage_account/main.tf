@@ -28,6 +28,7 @@ resource "azurerm_storage_account" "storage_account" {
   account_replication_type = "${var.azurerm_storage_account_account_replication_type}"
 
   network_rules {
+    default_action             = "${var.default_action}"
     ip_rules                   = ["${var.allowed_ips}"]
     virtual_network_subnet_ids = ["${data.azurerm_subnet.subnets.*.id}"]
   }

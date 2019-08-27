@@ -41,6 +41,12 @@ variable "allowed_ips" {
   default     = []
 }
 
+variable "default_action" {
+  description = "Specifies the default action of allow or deny when no other rules match"
+  default     = "Deny"
+}
+
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
