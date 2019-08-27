@@ -5,15 +5,15 @@ data "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_virtual_network" "vnets" {
-  count               = "${length(var.allowed_subnets)}"
-  name                = "${lookup(var.allowed_subnets[count.index], "vnet")}"
+  count               = "${length(var.azurerm_storage_account_network_rules_allowed_subnets)}"
+  name                = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "vnet")}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
 data "azurerm_subnet" "subnets" {
-  count                = "${length(var.allowed_subnets)}"
-  name                 = "${lookup(var.allowed_subnets[count.index], "subnet")}"
-  virtual_network_name = "${lookup(var.allowed_subnets[count.index], "vnet")}"
+  count                = "${length(var.azurerm_storage_account_network_rules_allowed_subnets)}"
+  name                 = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "subnet")}"
+  virtual_network_name = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "vnet")}"
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
 
@@ -28,8 +28,8 @@ resource "azurerm_storage_account" "storage_account" {
   account_replication_type = "${var.azurerm_storage_account_account_replication_type}"
 
   network_rules {
-    default_action             = "${var.default_action}"
-    ip_rules                   = ["${var.allowed_ips}"]
+    default_action             = "${var.azurerm_storage_account_network_rules_default_action}"
+    ip_rules                   = ["${var.azurerm_storage_account_network_rules_allowed_ips}"]
     virtual_network_subnet_ids = ["${data.azurerm_subnet.subnets.*.id}"]
   }
 
