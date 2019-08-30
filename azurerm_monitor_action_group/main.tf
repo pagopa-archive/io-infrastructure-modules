@@ -6,9 +6,9 @@ data "azurerm_resource_group" "rg" {
 
 
 resource "azurerm_monitor_action_group" "monitor_action_group" {
-  name                = "${var.monitoring_ag_name}"
+  name                = "${var.monitor_ag_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  short_name          = "${var.monitoring_ag_short_name}"
+  short_name          = "${var.monitor_ag_short_name}"
 
   email_receiver {
     name            = "${var.email_receiver_unique_name}"
