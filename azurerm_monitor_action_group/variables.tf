@@ -1,16 +1,16 @@
-variable "monitor_ag_name" {
+variable "azurerm_monitor_action_group_name" {
   description = "Descriptive monitor group name"
 }
 
-variable "monitor_ag_short_name" {
+variable "azurerm_monitor_action_group_short_name" {
   description = "Short name (1-12 characters) for the monitot group"
 }
 
-variable "email_receiver_unique_name" {
+variable "azurerm_monitor_action_group_email_receiver_name" {
   description = "Unique name for the alerts receiver"
 }
 
-variable "email_receiver_email" {
+variable "azurerm_monitor_action_group_email_receiver_email_address" {
   description = "Email of the person or a distribution list to send alerts to"
 }
 

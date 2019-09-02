@@ -1,3 +1,3 @@
 output "name" {
-  value = "${var.monitor_ag_name}"
+  value = "${var.azurerm_monitor_action_group_name}"
 }
