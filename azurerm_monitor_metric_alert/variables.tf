@@ -1,3 +1,5 @@
+# Generic variables
+
 variable "environment" {
   description = "The nick name identifying the type of environment (i.e. test, staging, production)."
 }
@@ -5,6 +7,12 @@ variable "environment" {
 variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
+
+variable "azurerm_monitor_action_group_name_suffix" {
+  description = "Suffix for the monitor action group name."
+}
+
+# Specific variables for monitor action group
 
 variable "azurerm_monitor_metric_alert_name" {
   description = "The name of the Metric Alert. Changing this forces a new resource to be created."
@@ -38,12 +46,8 @@ variable "azurerm_monitor_metric_alert_criteria_treshold" {
   description = "The criteria threshold value that activates the alert."
 }
 
-variable "azurerm_monitor_action_group_name_suffix" {
-  description = "Suffix for the monitor action group name."
-}
-
 locals {
-  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
+  # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-{environment}-RESOURCE_TYPE-SUFFIX
   azurerm_resource_group_name       = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_monitor_action_group_name = "${var.resource_name_prefix}-${var.environment}-monitor-ag-${var.azurerm_monitor_action_group_name_suffix}"
 }
