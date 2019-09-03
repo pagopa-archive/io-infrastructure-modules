@@ -7,7 +7,7 @@ data "azurerm_resource_group" "rg" {
 
 # New infrastructure
 resource "azurerm_monitor_action_group" "monitor_action_group" {
-  name                = "${var.azurerm_monitor_action_group_name}"
+  name                = "${local.azurerm_monitor_action_group_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   short_name          = "${var.azurerm_monitor_action_group_short_name}"
 
