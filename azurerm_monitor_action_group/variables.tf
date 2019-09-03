@@ -12,9 +12,10 @@ variable "resource_name_prefix" {
 
 variable "azurerm_monitor_action_group_name_suffix" {
   description = "Suffix for the monitor action group name."
+}
 
 variable "azurerm_monitor_action_group_short_name" {
-  description = "Short name (1-12 characters) for the monitot group"
+  description = "Short name (1-12 characters) for the monitor group"
 }
 
 variable "azurerm_monitor_action_group_email_receiver_name" {
