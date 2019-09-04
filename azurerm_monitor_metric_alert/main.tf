@@ -1,6 +1,6 @@
 # The module configure an alert based on a metric
 
-#Existing infrastructure
+# Existing infrastructure
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
