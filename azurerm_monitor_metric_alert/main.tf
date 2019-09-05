@@ -12,17 +12,18 @@ data "azurerm_monitor_action_group" "action_group" {
 
 # New infrastructure
 resource "azurerm_monitor_metric_alert" "resource_to_monitor" {
-  name                = "${var.azurerm_monitor_metric_alert_name}"
+  count               = "${length(var.alerts)}"
+  name                = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_name")}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  scopes              = ["${var.azurerm_monitor_metric_alert_scopes}"]
-  description         = "${var.azurerm_monitor_metric_alert_description}"
+  scopes              = ["${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_scopes")}"]
+  description         = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_description")}"
 
   criteria {
-    metric_namespace = "${var.azurerm_monitor_metric_alert_criteria_metric_namespace}"
-    metric_name      = "${var.azurerm_monitor_metric_alert_criteria_metric_name}"
-    aggregation      = "${var.azurerm_monitor_metric_alert_criteria_aggregation}"
-    operator         = "${var.azurerm_monitor_metric_alert_criteria_operator}"
-    threshold        = "${var.azurerm_monitor_metric_alert_criteria_treshold}"
+    aggregation      = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_criteria_aggregation")}"
+    metric_name      = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_criteria_metric_name")}"
+    metric_namespace = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_criteria_metric_namespace")}"
+    operator         = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_criteria_operator")}"
+    threshold        = "${lookup(var.alerts[count.index], "azurerm_monitor_metric_alert_criteria_treshold")}"
   }
 
   action {
