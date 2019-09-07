@@ -40,6 +40,11 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "azurerm_key_vault_secret" "ssh_public_key" {
+  name         = "${var.azurerm_key_vault_secret_ssh_public_key_name}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
 data "azurerm_key_vault_secret" "aks_client_secret" {
   name         = "${var.azurerm_key_vault_secret_name}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
@@ -76,7 +81,7 @@ resource "azurerm_kubernetes_cluster" "azurerm_kubernetes_cluster" {
     admin_username = "${var.azurerm_kubernetes_cluster_linux_profile_admin_username}"
 
     ssh_key {
-      key_data = "${file("${var.ssh_public_key_path}")}"
+      key_data = "${data.azurerm_key_vault_secret.ssh_public_key.value}"
     }
   }
 

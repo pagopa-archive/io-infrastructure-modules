@@ -34,6 +34,10 @@ variable "azurerm_kubernetes_cluster_linux_profile_admin_username" {
   description = "The username for the admin account on cluster nodes."
 }
 
+variable "azurerm_key_vault_secret_ssh_public_key_name" {
+  description = "The name of the SSH key secret stored in the Azure Keyvault."
+}
+
 variable "azurerm_kubernetes_cluster_agent_pool_profile_count" {
   description = "How many agent nodes in the cluster."
 }
@@ -50,10 +54,6 @@ variable "azurerm_kubernetes_cluster_agent_pool_profile_max_pods" {
 # Run az aks get-versions --location westeurope to see the versions available
 variable "azurerm_kubernetes_cluster_kubernetes_version" {
   description = "The Kubernetes version to be used."
-}
-
-variable "ssh_public_key_path" {
-  description = "The path to the SSH public key file, used to authorize initial SSH access to the machine."
 }
 
 # Network variables
@@ -93,6 +93,6 @@ locals {
   azurerm_kubernetes_cluster_name                    = "${var.resource_name_prefix}-${var.environment}-aks-${var.aks_cluster_name}"
   # Agent pool profile cluster name cannot have dashes
   agent_pool_profile_cluster_name                    = "${replace(var.aks_cluster_name, "-", "")}"
-  azurerm_kubernetes_cluster_agent_pool_profile_name = "${var.resource_name_prefix}${var.environment}${local.agent_pool_profile_cluster_name}"
+  azurerm_kubernetes_cluster_agent_pool_profile_name = "${var.resource_name_prefix}${substr(var.environment, 0, 2)}${local.agent_pool_profile_cluster_name}"
   azurerm_key_vault_name                             = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }
