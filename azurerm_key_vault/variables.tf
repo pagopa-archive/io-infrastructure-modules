@@ -10,7 +10,13 @@ variable "azurerm_key_vault_tenant_id" {
   description = "The Azure AD ID"
 }
 
-variable "policy_object_list_map" {
+variable "user_policies" {
+  description = "A list of dictionaries representing the user's policies. The keys of each dictionary are mandatory and are: object_id, key_permissions, secret_permissions, certificate_permissions (see here for more details: https://www.terraform.io/docs/providers/azurerm/r/key_vault_access_policy.html)"
+  type = "list"
+}
+
+variable "app_policies" {
+  description = "A list of dictionaries representing the app's policies. The keys of each dictionary are mandatory and are: object_id, application_id, key_permissions, secret_permissions, certificate_permissions (see here for more details: https://www.terraform.io/docs/providers/azurerm/r/key_vault_access_policy.html)"
   type = "list"
 }
 
