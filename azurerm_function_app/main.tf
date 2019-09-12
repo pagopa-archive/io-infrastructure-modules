@@ -53,8 +53,9 @@ data "null_data_source" "functionapp_connection_strings" {
   count = "${length(var.functionapp_connection_strings)}"
 
   inputs = {
-    Name  = "${lookup(var.functionapp_connection_strings[count.index],"name")}"
-    Value = "${element(data.azurerm_key_vault_secret.functionapp_connection_strings.*.value, count.index)}"
+    name             = "${lookup(var.functionapp_connection_strings[count.index],"name")}"
+    connectionstring = "${element(data.azurerm_key_vault_secret.functionapp_connection_strings.*.value, count.index)}"
+    type             = "${var.functionapp_connection_strings_type}"
   }
 }
 

@@ -43,6 +43,12 @@ variable "https_only" {
   description = "Force HTTPS in Azure Functions."
 }
 
+variable "functionapp_connection_strings_type" {
+  description = "The type of db connection."
+  default     = "Custom"
+}
+
+
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
   azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
