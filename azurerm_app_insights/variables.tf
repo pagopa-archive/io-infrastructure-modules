@@ -12,7 +12,7 @@ variable "resource_name_prefix" {
 variable "applications_insights" {
   type        = "list"
   default     = []
-  description = "A list of map(s) that contains one or more alert definition. Please read README.md to the list of keys required to be present"
+  description = "A list of map(s) that contains one or application insights definition. Please read README.md to the list of keys required to be present"
 }
 
 locals {
