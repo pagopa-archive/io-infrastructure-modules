@@ -17,5 +17,5 @@ variable "applications_insights" {
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-{environment}-RESOURCE_TYPE-SUFFIX
-  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
 }
