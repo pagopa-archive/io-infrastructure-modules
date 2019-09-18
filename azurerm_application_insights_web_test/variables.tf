@@ -8,7 +8,7 @@ variable "resource_name_prefix" {
   description = "The prefix used to name all resources created."
 }
 
-# Specific variables for monitor action group
+# Specific variables for the application insight web test
 
 variable "web_tests" {
   type        = "list"
