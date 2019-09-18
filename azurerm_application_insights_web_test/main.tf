@@ -5,6 +5,11 @@ data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
 
+data "azurerm_application_insights" "generic_web_tests" {
+  name                = "io-dev-ai-generic-web-tests"
+  resource_group_name = "${local.azurerm_resource_group_name}"
+}
+
 # New infrastructure
 resource "azurerm_application_insights_web_test" "web_test" {
   count = "${length(var.web_tests)}"
@@ -12,13 +17,13 @@ resource "azurerm_application_insights_web_test" "web_test" {
   name = "${lookup(var.web_tests[count.index], "name")}"
 
   resource_group_name     = "${local.azurerm_resource_group_name}"
-  application_insights_id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-dev-rg/providers/microsoft.insights/components/io-dev-ai-generic-web-tests"
+  application_insights_id = "${data.azurerm_application_insights.generic_web_tests.id}"
 
   kind          = "ping"
   retry_enabled = true
   timeout       = 30
 
-  location      = "westeurope"
+  location      = "${data.azurerm_resource_group.rg.location}"
   geo_locations = [
     "emea-nl-ams-azr",
     "us-va-ash-azr"
