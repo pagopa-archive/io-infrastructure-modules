@@ -1,4 +1,4 @@
-# The module configure an web test from an url
+# The module configure a web test from an url
 
 # Existing infrastructure
 data "azurerm_resource_group" "rg" {
