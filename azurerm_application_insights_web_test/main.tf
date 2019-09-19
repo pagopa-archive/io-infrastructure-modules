@@ -6,7 +6,8 @@ data "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_application_insights" "generic_web_tests" {
-  name                = "io-${var.environment}-ai-generic-web-tests"
+
+  name                = "${local.azurerm_application_insight_name}"
   resource_group_name = "${local.azurerm_resource_group_name}"
 }
 

@@ -10,6 +10,10 @@ variable "resource_name_prefix" {
 
 # Specific variables for the application insight web test
 
+variable "azurerm_application_insight_suffix" {
+  description = "Suffix of the application insight"
+}
+
 variable "web_tests" {
   type        = "list"
   default     = []
@@ -18,5 +22,6 @@ variable "web_tests" {
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-{environment}-RESOURCE_TYPE-SUFFIX
-  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_application_insight_name = "${var.resource_name_prefix}-${var.environment}-ai-${var.azurerm_application_insight_suffix}"
+  azurerm_resource_group_name      = "${var.resource_name_prefix}-${var.environment}-rg"
 }
