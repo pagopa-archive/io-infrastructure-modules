@@ -23,15 +23,11 @@ Alert definitions require the *name*, *url* and *headers_xml* variables:
  variable "name" {
    description = "The name of the web test.
  }
-```
 
-```
  variable "url" {
    description = "the url we want to monitor"
  }
-```
-
-```	
+	
  variable "headers_xml" {
    description = "A string(s) that contains one or more <Header Key="" Value=" />"
  }
