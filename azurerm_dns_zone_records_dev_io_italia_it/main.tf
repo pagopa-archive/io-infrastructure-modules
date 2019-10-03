@@ -45,14 +45,14 @@ resource "azurerm_dns_cname_record" "kubernetes_cname_records" {
 
 # Kubernetes end
 
-# APIM start
+# Application Gateway start
 
-resource "azurerm_dns_cname_record" "apim_cname_record" {
+resource "azurerm_dns_a_record" "application_gateway_a_record" {
   name                = "api"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
   zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
   ttl                 = "${var.dns_record_ttl}"
-  record              = "io-dev-apim-01.azure-api.net"
+  records             = ["40.119.152.156"]
 }
 
-# APIM end
+# Application Gateway
