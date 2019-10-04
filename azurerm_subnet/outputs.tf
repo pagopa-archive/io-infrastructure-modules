@@ -5,5 +5,5 @@ output "azurerm_subnet_name" {
 
 output "azurerm_subnet_id" { 
   description = "The id of the subnet created"
-  value       = "${azurerm_subnet.subnet.id}"
+  value       = "${azurerm_subnet.subnet.*.id}"
 }
