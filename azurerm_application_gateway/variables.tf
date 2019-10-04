@@ -15,7 +15,7 @@ variable "resource_name_prefix" {
 # Application Gateway plan specific variables
 variable "azurerm_public_ip_allocation_method" {
   description = "The public ip associated to the Application Gateway."
-  default = "Dynamic"
+  default     = "Dynamic"
 }
 
 variable "azurerm_application_gateway_sku_name" {
@@ -27,31 +27,31 @@ variable "azurerm_application_gateway_sku_tier" {
 
 variable "azurerm_application_gateway_autoscaling_configuration_min_capacity" {
   description = "Minimum capacity for autoscaling."
-  default = "2"
+  default     = "2"
 }
 variable "azurerm_application_gateway_autoscaling_configuration_max_capacity" {
   description = "Maximum capacity for autoscaling."
-  default = "4"
+  default     = "4"
 }
 variable "azurerm_application_gateway_frontend_port_port" {
   description = "The port used for this Frontend Port."
-  default = "443"
+  default     = "443"
 }
 variable "azurerm_application_gateway_waf_configuration_enabled" {
   description = "Enable the Web Application Firewall."
-  default = true
+  default     = true
 }
 variable "azurerm_application_gateway_waf_configuration_firewall_mode" {
   description = "he Web Application Firewall Mode"
-  default = "Prevention"
+  default     = "Prevention"
 }
 variable "azurerm_application_gateway_waf_configuration_rule_set_type" {
   description = "The Type of the Rule Set used for this Web Application Firewall."
-  default = "OWASP"
+  default     = "OWASP"
 }
 variable "azurerm_application_gateway_waf_configuration_rule_set_version" {
   description = "The Version of the Rule Set used for this Web Application Firewall."
-  default = "3.1"
+  default     = "3.1"
 }
 
 variable "azurerm_application_gateway_backend_address_pool_ip_addresses" {
