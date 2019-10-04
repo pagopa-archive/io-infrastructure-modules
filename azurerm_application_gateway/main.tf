@@ -32,12 +32,12 @@ module "subnet_frontend" {
     source = "git::git@github.com:teamdigitale/io-infrastructure-modules.git//azurerm_subnet"
   
     # Azure subnet module variables
-    vnet_name                        = "common"
-    subnet_name                      = "ag-frontend"
-    azurerm_subnet_address_prefix    = "172.16.55.0/24"
-    add_security_group               = false
-    azurerm_network_security_rules   = []
-    set_subnet_delegation            = false
+    vnet_name                      = "common"
+    subnet_name                    = "ag-frontend"
+    azurerm_subnet_address_prefix  = "172.16.55.0/24"
+    add_security_group             = false
+    azurerm_network_security_rules = []
+    set_subnet_delegation          = false
 
     # Module Variables
     environment          = "${var.environment}"
