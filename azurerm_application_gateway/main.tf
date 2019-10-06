@@ -12,7 +12,7 @@ data "azurerm_key_vault_secret" "certificate" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 
-// IP module
+# IP module
 module "gateway_ip" {
     source = "git::git@github.com:teamdigitale/io-infrastructure-modules.git//azurerm_public_ip"
     
@@ -22,12 +22,12 @@ module "gateway_ip" {
     azurerm_public_ip_sku       = "Standard"
 
     # Module Variables
-    environment          = "${var.environment}"
-    location             = "${var.location}"
-    resource_name_prefix = "${var.resource_name_prefix}"
+    environment                 = "${var.environment}"
+    location                    = "${var.location}"
+    resource_name_prefix        = "${var.resource_name_prefix}"
 }
 
-// Subnet modules
+# Subnet modules
 module "subnet_frontend" {
     source = "git::git@github.com:teamdigitale/io-infrastructure-modules.git//azurerm_subnet"
   
@@ -40,20 +40,20 @@ module "subnet_frontend" {
     set_subnet_delegation          = false
 
     # Module Variables
-    environment          = "${var.environment}"
-    location             = "${var.location}"
-    resource_name_prefix = "${var.resource_name_prefix}"
+    environment                    = "${var.environment}"
+    location                       = "${var.location}"
+    resource_name_prefix           = "${var.resource_name_prefix}"
 }
 
-// Application Gateway resource
+# Application Gateway resource
 resource "azurerm_application_gateway" "ag_as_waf" {
   name                = "${local.azurerm_application_gateway_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   location            = "${data.azurerm_resource_group.rg.location}"
 
   sku {
-    name     = "${var.azurerm_application_gateway_sku_name}"
-    tier     = "${var.azurerm_application_gateway_sku_tier}"
+    name = "${var.azurerm_application_gateway_sku_name}"
+    tier = "${var.azurerm_application_gateway_sku_tier}"
   }
 
   autoscale_configuration {
