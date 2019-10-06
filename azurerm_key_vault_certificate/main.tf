@@ -42,9 +42,7 @@ resource "azurerm_key_vault_certificate" "certificate" {
 
     x509_certificate_properties {
       extended_key_usage = ["${var.azurerm_key_vault_certificate_certificate_policy_x509_certificate_properties}"]
-
-      key_usage = ["${var.azurerm_key_vault_certificate_certificate_policy_key_usage}"]
-
+      key_usage          = ["${var.azurerm_key_vault_certificate_certificate_policy_key_usage}"]
       subject            = "${var.azurerm_key_vault_certificate_certificate_policy_x509_certificate_properties_subject}"
       validity_in_months = "${var.azurerm_key_vault_certificate_certificate_policy__x509_certificate_properties_validity_in_months}"
     }
