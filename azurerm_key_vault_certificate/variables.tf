@@ -10,46 +10,46 @@ variable "resource_name_prefix" {
 # key_vault_certificate specific variables
 variable "azurerm_key_vault_certificate_certificate_policy_issuer_parameters_name" {
   description = "description"
-  default = "Self"
+  default     = "Self"
 }
 variable "azurerm_key_vault_certificate_certificate_policy_key_properties_exportable" {
   description = "Is this Certificate Exportable?"
-  default = true
+  default     = true
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_key_properties_size" {
   description = "The size of the Key used in the Certificate."
-  default = 2048
+  default     = 2048
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_key_properties_key_type" {
   description = "The Type of Key"
-  default = "RSA"
+  default     = "RSA"
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_key_properties_reuse_key" {
   description = "Is the key reusable?"
-  default = true
+  default     = true
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_lifetime_action_action_action_type" {
   description = "The Type of action to be performed when the lifetime trigger is triggerec."
-  default = "AutoRenew"
+  default     = "AutoRenew"
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_lifetime_action_trigger_days_before_expiry" {
   description = "The number of days before the Certificate expires that the action associated with this Trigger should run."
-  default = 30
+  default     = 30
 }
 
 variable "azurerm_key_vault_certificate_certificate_policy_secret_properties_content_type" {
   description = "The Content-Type of the Certificate"
-  default = "application/x-pkcs12"
+  default     = "application/x-pkcs12"
 }
 variable "azurerm_key_vault_certificate_certificate_policy_x509_certificate_properties" {
   type = "list"
   description = "A list of Extended/Enhanced Key Usages."
-  default = ["1.3.6.1.5.5.7.3.1"]
+  default     = ["1.3.6.1.5.5.7.3.1"]
 }
 variable "azurerm_key_vault_certificate_certificate_policy_key_usage" {
   type        = "list"
@@ -62,7 +62,7 @@ variable "azurerm_key_vault_certificate_certificate_policy_x509_certificate_prop
 }
 variable "azurerm_key_vault_certificate_certificate_policy__x509_certificate_properties_validity_in_months" {
   description = "The Certificates Validity Period in Months. "
-  default = 12
+  default     = 12
 }
 
 locals {
