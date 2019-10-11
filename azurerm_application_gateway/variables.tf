@@ -76,7 +76,7 @@ variable "azurerm_application_gateway_probe_unhealthy_threshold" {
   default     = 8
 }
 variable "log_analytics_workspace_name" {
-  description = "The log_analytics_workspace_name"
+  description = "The Log Analytics workspace name."
 }
 
 variable "azurerm_application_gateway_diagnostic_logs_retention" {
