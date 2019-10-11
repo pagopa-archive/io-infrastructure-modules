@@ -75,8 +75,17 @@ variable "azurerm_application_gateway_probe_unhealthy_threshold" {
   description = "The Unhealthy Threshold for this Probe, which indicates the amount of retries which should be attempted before a node is deemed unhealthy."
   default     = 8
 }
-variable "azurerm_key_vault_certificate_certificate_policy_x509_certificate_properties_subject" {
-  description = "The Certificate's Subject."
+variable "log_analytics_workspace_name" {
+  description = "The Log Analytics workspace name."
+}
+
+variable "azurerm_application_gateway_diagnostic_logs_retention" {
+  description = "The number of days for which this Retention Policy should apply."
+  default     = 15
+}
+variable "azurerm_application_gateway_diagnostic_metrics_retention" {
+  description = "The number of days for which this Retention Policy should apply."
+  default     = 15
 }
 
 locals {
@@ -94,6 +103,8 @@ locals {
   azurerm_application_gateway_request_routing_rule_name      = "${var.resource_name_prefix}-${var.environment}-ag-rqrt"
   azurerm_application_gateway_redirect_configuration_name    = "${var.resource_name_prefix}-${var.environment}-ag-rdrcfg"
   azurerm_application_gateway_ssl_certificate_name           = "${var.resource_name_prefix}-${var.environment}-ag-ssl"
+  azurerm_application_gateway_diagnostic_name                = "${var.resource_name_prefix}-${var.environment}-ag-diagnostic"
+  azurerm_log_analytics_workspace_name                       = "${var.resource_name_prefix}-${var.environment}-log-analytics-workspace-${var.log_analytics_workspace_name}"
 
 }
 
