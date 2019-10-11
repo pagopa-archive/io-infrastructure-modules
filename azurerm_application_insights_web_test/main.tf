@@ -37,7 +37,7 @@ resource "azurerm_application_insights_web_test" "web_test" {
 	   Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default"
 	   StopOnError="False" RecordedResultFile="" ResultsLocale="">
     <Items>
-      <Request Method="${lookup(var.web_test[count.index], "method", "GET")}" Guid="a5f10126-e4cd-570d-961c-cea43999a200"
+      <Request Method="${lookup(var.web_tests[count.index], "method", "GET")}" Guid="a5f10126-e4cd-570d-961c-cea43999a200"
         Version="1.1" Url="${lookup(var.web_tests[count.index], "url")}"
 	ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True"
 	Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="200"
