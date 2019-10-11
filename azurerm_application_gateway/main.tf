@@ -132,3 +132,61 @@ resource "azurerm_application_gateway" "ag_as_waf" {
     password = ""
   }
 }
+
+// Get log_analytics_workspace_id
+data "azurerm_log_analytics_workspace" "workspace" {
+  name                = "${local.azurerm_log_analytics_workspace_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+// Get Diagnostic settings for AG
+data "azurerm_monitor_diagnostic_categories" "ag" {
+  resource_id = "${azurerm_application_gateway.ag_as_waf.id}"
+}
+
+// Add diagnostic to AG
+resource "azurerm_monitor_diagnostic_setting" "ag" {
+  name               = "${local.azurerm_application_gateway_diagnostic_name}"
+  target_resource_id = "${azurerm_application_gateway.ag_as_waf.id}"
+
+  log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.workspace.id}"
+
+  log {
+    category = "${data.azurerm_monitor_diagnostic_categories.ag.logs[0]}"
+    enabled  = true
+
+    retention_policy {
+      enabled = true
+      days    = "${var.azurerm_application_gateway_diagnostic_logs_retention}"
+    }
+  }
+
+  log {
+    category = "${data.azurerm_monitor_diagnostic_categories.ag.logs[1]}"
+    enabled  = true
+
+    retention_policy {
+      enabled = true
+      days    = "${var.azurerm_application_gateway_diagnostic_logs_retention}"
+    }
+  }
+
+  log {
+    category = "${data.azurerm_monitor_diagnostic_categories.ag.logs[2]}"
+    enabled  = true
+
+    retention_policy {
+      enabled = true
+      days    = "${var.azurerm_application_gateway_diagnostic_logs_retention}"
+    }
+  }
+
+  metric {
+    category = "${data.azurerm_monitor_diagnostic_categories.ag.metrics[0]}"
+
+    retention_policy {
+      enabled = true
+      days    = "${var.azurerm_application_gateway_diagnostic_metrics_retention}"
+    }
+  }
+}
