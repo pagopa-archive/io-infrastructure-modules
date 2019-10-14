@@ -45,6 +45,7 @@ resource "azurerm_application_insights_web_test" "web_test" {
 	<Headers>
           ${lookup(var.web_tests[count.index], "headers_xml", "")}
 	</Headers>
+	<StringHttpBody ContentType="application/json">${lookup(var.web_tests[count.index], "body", "")}</StringHttpBody>
       </Request>
     </Items>
   </WebTest>
