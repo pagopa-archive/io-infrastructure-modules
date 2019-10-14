@@ -74,26 +74,3 @@ resource "azurerm_api_management_user" "apim_users" {
 
   state = "active"
 }
-
-# This will work for the first element in apim_user, will be improved with the
-# "for each" structure on terraform 0.12
-resource "azurerm_api_management_group_user" "apim_group_user_membership" {
-  count               = "${length(split(",",lookup(var.apim_users[0],"groups","Developers")))}"
-  count               = "7"
-  user_id             = "${element(azurerm_api_management_user.apim_users.*.user_id, 0)}"
-  group_name          = "${element(split(",",lookup(var.apim_users[0],"groups","Developers")),count.index)}"
-  api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
-
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-}
-
-resource "azurerm_api_management_subscription" "apim_user_product_subscriptions" {
-  count               = "${length(split(",",lookup(var.apim_users[0],"subscriptions","")))}"
-  api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
-
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  user_id             = "${element(azurerm_api_management_user.apim_users.*.id, 0)}"
-  product_id          = "${(data.azurerm_api_management.api_management.id)}/products/${element(split(",",lookup(var.apim_users[0],"subscriptions")),count.index)}"
-  display_name        = "${element(split(",",lookup(var.apim_users[0],"subscriptions")),count.index)}-${element(azurerm_api_management_user.apim_users.*.user_id, 0)}"
-  state               = "active"
-}
