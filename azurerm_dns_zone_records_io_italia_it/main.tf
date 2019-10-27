@@ -15,8 +15,7 @@ data "azurerm_public_ip" "kubernetes_public_ip" {
 
 data "azurerm_dns_zone" "dns_zone" {
   name                = "${local.azurerm_dns_zone_name}"
-  resource_group_name = "agid-rg-prod"
-  # resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
 # New infrastructure

@@ -74,6 +74,6 @@ locals {
   azurerm_dns_zone_name                      = "${var.dns_zone_prefix != "" ? local.private_prefix_environment_dns_zone_suffix : var.dns_zone_suffix}"
   # Define resource names based on the following convention:
   # {resource_name_prefix}-{environment}-{resource_type}-{resource_name}
-  azurerm_resource_group_name                = "${var.resource_name_prefix}-${var.environment}"
+  azurerm_resource_group_name                = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_kubernetes_cluster_name            = "${var.resource_name_prefix}-${var.environment}-aks-${var.aks_cluster_name}"
 }
