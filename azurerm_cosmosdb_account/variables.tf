@@ -32,35 +32,21 @@ variable "azurerm_cosmosdb_account_consistency_policy" {
   type        = "map"
 }
 
-variable "azurerm_cosmosdb_account_geo_location_master" {
-  description = "It's an object. Parameters: location (mandatory, the location where data are saved), failover_priority (mandatory, must be set to 0), prefix (optional, the string used to generate the document endpoints for this region, defaults to ${cosmosdb_account.name}-${location})"
-  type        = "map"
+variable "allowed_vnet_suffix" {
+  description = "The name of the virtual network allowed to access CosmosDB."
 }
 
-variable "azurerm_cosmosdb_account_geo_location_slave" {
-  description = "It's an object. Parameters: location (mandatory, the location where data are saved), failover_priority (mandatory, must be set to 1), prefix (optional, the string used to generate the document endpoints for this region, defaults to ${cosmosdb_account.name}-${location})"
-  type        = "map"
-}
-
-variable "azurerm_cosmosdb_account_is_virtual_network_filter_enabled" {
-  description = "Enables virtual network filtering "
-  default     = false
-}
-
-variable "vnet_name" {
-  description = "The name of the virtual network connecting all resources."
-}
-
-variable "subnet_name" {
-  description = "The name of the virtual network connecting all resources."
+variable "allowed_subnets_suffix" {
+  description = "A list of the name suffixes of the subnets allowed to access CosmosDB. For example, for io-dev-subnet-fn2app would be fn2app."
+  type        = "list"
+  default     = []
 }
 
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
-
-  azurerm_virtual_network_name  = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
-  azurerm_subnet_name           = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+  azurerm_resource_group_name   = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_virtual_network_name  = "${var.resource_name_prefix}-${var.environment}-vnet-${var.allowed_vnet_suffix}"
   azurerm_cosmosdb_account_name = "${var.resource_name_prefix}-${var.environment}-cosmosdb-${var.cosmosdb_account_name}"
+  azurerm_key_vault_name        = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }
