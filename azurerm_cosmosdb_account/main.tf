@@ -60,42 +60,42 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 
 # Admin functions
 
-resource "azurerm_key_vault_secret" "f2nadminCosmosdbUri" {
+resource "azurerm_key_vault_secret" "fn2adminCosmosdbUri" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nadminCosmosdbUri"
+  name         = "fn2adminCosmosdbUri"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
 }
 
-resource "azurerm_key_vault_secret" "f2nadminCosmosdbKey" {
+resource "azurerm_key_vault_secret" "fn2adminCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nadminCosmosdbKey"
+  name         = "fn2adminCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
 
 # App functions
 
-resource "azurerm_key_vault_secret" "f2nappCosmosdbUri" {
+resource "azurerm_key_vault_secret" "fn2appCosmosdbUri" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nappCosmosdbUri"
+  name         = "fn2appCosmosdbUri"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
 }
 
-resource "azurerm_key_vault_secret" "f2naappCosmosdbKey" {
+resource "azurerm_key_vault_secret" "fn2aappCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nappCosmosdbKey"
+  name         = "fn2appCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
 
 # Services functions
 
-resource "azurerm_key_vault_secret" "f2nservicesCosmosdbUri" {
+resource "azurerm_key_vault_secret" "fn2servicesCosmosdbUri" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nservicesCosmosdbUri"
+  name         = "fn2servicesCosmosdbUri"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
 }
 
-resource "azurerm_key_vault_secret" "f2nservicesCosmosdbKey" {
+resource "azurerm_key_vault_secret" "fn2servicesCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "f2nservicesCosmosdbKey"
+  name         = "fn2servicesCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
