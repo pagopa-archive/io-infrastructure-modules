@@ -5,15 +5,15 @@ data "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_virtual_network" "vnets" {
-  count               = "${length(var.azurerm_storage_account_network_rules_allowed_subnets)}"
-  name                = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "vnet")}"
+  count               = "${length(var.allowed_subnets_suffixes)}"
+  name                = "${var.resource_name_prefix}-${var.environment}-vnet-common"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
 data "azurerm_subnet" "subnets" {
-  count                = "${length(var.azurerm_storage_account_network_rules_allowed_subnets)}"
-  name                 = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "subnet")}"
-  virtual_network_name = "${lookup(var.azurerm_storage_account_network_rules_allowed_subnets[count.index], "vnet")}"
+  count                = "${length(var.allowed_subnets_suffixes)}"
+  name                 = "${var.resource_name_prefix}-${var.environment}-subnet-${var.allowed_subnets_suffixes[count.index]}"
+  virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-common"
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
 
