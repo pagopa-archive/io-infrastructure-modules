@@ -23,23 +23,9 @@ variable "subnet_name" {
 variable "functionapp_name" {
   description = "The name suffix of the functionapp."
 }
-
-variable "azurerm_functionapp_git_repo" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-}
-
-variable "azurerm_functionapp_git_branch" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-}
-
 variable "azurerm_functionapp_reservedInstanceCount" {
   description = "Number of reserved instances (to prevent cold start).This setting only applies to the Consumption and Premium Plan"
   default     = "1"
-}
-
-variable "website_git_provisioner" {
-  description = "The short nick name identifying the type of environment (i.e. test, staging, production)"
-  default     = "azurerm_website_git.ts"
 }
 
 locals {
