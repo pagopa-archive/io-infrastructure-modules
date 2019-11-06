@@ -64,6 +64,7 @@ resource "azuread_application" "application_aad_client" {
   count                   = "${var.app_type == "k8s_aad_client" ? 1 : 0}"
   name                    = "${local.azuread_application_name}"
   group_membership_claims = "All"
+  public_client           = true
 
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000"
