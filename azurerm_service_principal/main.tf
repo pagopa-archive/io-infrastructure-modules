@@ -159,17 +159,3 @@ resource "azurerm_role_assignment" "sp_role" {
   role_definition_name = "${var.azurerm_role_assignment_role_definition_name}"
   principal_id         = "${azuread_service_principal.service_principal.id}"
 }
-
-resource "azurerm_role_assignment" "sp_role_aad_server" {
-  count                = "${var.app_type == "k8s_aad_server" ? 1 : 0}"
-  scope                = "${data.azurerm_subscription.current.id}"
-  role_definition_name = "${var.azurerm_role_assignment_role_definition_name}"
-  principal_id         = "${azuread_service_principal.service_principal_aad_server.id}"
-}
-
-resource "azurerm_role_assignment" "sp_role_aad_client" {
-  count                = "${var.app_type == "k8s_aad_client" ? 1 : 0}"
-  scope                = "${data.azurerm_subscription.current.id}"
-  role_definition_name = "${var.azurerm_role_assignment_role_definition_name}"
-  principal_id         = "${azuread_service_principal.service_principal_aad_client.id}"
-}
