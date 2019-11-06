@@ -55,6 +55,19 @@ data "azurerm_log_analytics_workspace" "log_analytics_workspace" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "azuread_application" "application_aad_server" {
+  name  = "${local.azuread_application_application_aad_server}"
+}
+
+data "azuread_application" "application_aad_client" {
+  name  = "${local.azuread_application_application_aad_client}"
+}
+
+data "azurerm_key_vault_secret" "application_aad_server_sp_secret" {
+  name         = "${var.azurerm_key_vault_secret_application_aad_server_sp_secret}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
 # New infrastructure
 
 resource "azurerm_log_analytics_solution" "log_analytics_solution" {
@@ -112,6 +125,15 @@ resource "azurerm_kubernetes_cluster" "azurerm_kubernetes_cluster" {
     service_cidr       = "${var.azurerm_kubernetes_cluster_network_profile_service_cidr}"
     dns_service_ip     = "${var.azurerm_kubernetes_cluster_network_profile_dns_service_ip}"
     docker_bridge_cidr = "${var.azurerm_kubernetes_cluster_network_profile_docker_bridge_cidr}"
+  }
+
+  role_based_access_control {
+    enabled = true
+    azure_active_directory {
+      client_app_id     = "${data.azuread_application.application_aad_client.application_id}"
+      server_app_id     = "${data.azuread_application.application_aad_server.application_id}"
+      server_app_secret = "${data.azurerm_key_vault_secret.application_aad_server_sp_secret.value}"
+    }
   }
 
   tags {

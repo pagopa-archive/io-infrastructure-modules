@@ -82,6 +82,23 @@ variable "azurerm_kubernetes_cluster_network_profile_docker_bridge_cidr" {
   description = "IP address (in CIDR notation) used as the Docker bridge IP address on nodes."
 }
 
+# AAD integration
+
+variable "app_name_k8s_aad_server" {
+  description = "The k8s aad server Azure application name. Defaults to k8s-aad-server)"
+  default     = "k8s-01-aad-server"
+}
+
+variable "app_name_k8s_aad_client" {
+  description = "The k8s aad client Azure application name. Defaults to k8s-aad-client)"
+  default     = "k8s-01-aad-client"
+}
+
+variable "azurerm_key_vault_secret_application_aad_server_sp_secret" {
+  description = "The key of the Azure Keyvault secret containing the aad_server_sp secret. Defaults to k8s-01-aad-server-sp-secret."
+  default     = "k8s-01-aad-server-sp-secret"
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
@@ -95,4 +112,6 @@ locals {
   agent_pool_profile_cluster_name                    = "${replace(var.aks_cluster_name, "-", "")}"
   azurerm_kubernetes_cluster_agent_pool_profile_name = "${var.resource_name_prefix}${substr(var.environment, 0, 2)}${local.agent_pool_profile_cluster_name}"
   azurerm_key_vault_name                             = "${var.resource_name_prefix}-${var.environment}-keyvault"
+  azuread_application_application_aad_client         = "${var.resource_name_prefix}-${var.environment}-sp-${var.app_name_k8s_aad_client}"
+  azuread_application_application_aad_server         = "${var.resource_name_prefix}-${var.environment}-sp-${var.app_name_k8s_aad_server}"
 }
