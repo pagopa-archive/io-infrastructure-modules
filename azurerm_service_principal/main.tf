@@ -29,6 +29,10 @@ resource "azuread_application" "application_aad_server" {
   name                    = "${local.azuread_application_name}"
   group_membership_claims = "All"
 
+  reply_urls = [
+    "https://aksazureadserver"
+  ]
+
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000"
 
@@ -65,6 +69,10 @@ resource "azuread_application" "application_aad_client" {
   name                    = "${local.azuread_application_name}"
   group_membership_claims = "All"
   public_client           = true
+
+  reply_urls = [
+    "https://aksazureadclient"
+  ]
 
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000"
