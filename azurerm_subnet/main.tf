@@ -28,21 +28,23 @@ resource "azurerm_route" "route" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  count                = "${1 - var.set_subnet_delegation}"
-  name                 = "${local.azurerm_subnet_name}"
-  resource_group_name  = "${data.azurerm_resource_group.rg.name}"
-  address_prefix       = "${var.azurerm_subnet_address_prefix}"
-  virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
-  service_endpoints    = "${var.azurerm_subnet_service_endpoints}"
+  count                     = "${1 - var.set_subnet_delegation}"
+  name                      = "${local.azurerm_subnet_name}"
+  resource_group_name       = "${data.azurerm_resource_group.rg.name}"
+  address_prefix            = "${var.azurerm_subnet_address_prefix}"
+  virtual_network_name      = "${data.azurerm_virtual_network.vnet.name}"
+  service_endpoints         = "${var.azurerm_subnet_service_endpoints}"
+  network_security_group_id = "${azurerm_network_security_group.security_group.id}"
 }
 
 resource "azurerm_subnet" "subnet_delegation" {
-  count                = "${var.set_subnet_delegation}"
-  name                 = "${local.azurerm_subnet_name}"
-  resource_group_name  = "${data.azurerm_resource_group.rg.name}"
-  address_prefix       = "${var.azurerm_subnet_address_prefix}"
-  virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
-  service_endpoints    = "${var.azurerm_subnet_service_endpoints}"
+  count                     = "${var.set_subnet_delegation}"
+  name                      = "${local.azurerm_subnet_name}"
+  resource_group_name       = "${data.azurerm_resource_group.rg.name}"
+  address_prefix            = "${var.azurerm_subnet_address_prefix}"
+  virtual_network_name      = "${data.azurerm_virtual_network.vnet.name}"
+  service_endpoints         = "${var.azurerm_subnet_service_endpoints}"
+  network_security_group_id = "${azurerm_network_security_group.security_group.id}"
 
   delegation {
     name = "delegation"
