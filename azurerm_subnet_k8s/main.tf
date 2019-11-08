@@ -21,8 +21,3 @@ resource "azurerm_subnet" "subnet" {
     ignore_changes = ["route_table_id"]
   }
 }
-
-
-
-
-
