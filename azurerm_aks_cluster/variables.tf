@@ -38,8 +38,12 @@ variable "azurerm_key_vault_secret_ssh_public_key_name" {
   description = "The name of the SSH key secret stored in the Azure Keyvault."
 }
 
-variable "azurerm_kubernetes_cluster_agent_pool_profile_count" {
-  description = "How many agent nodes in the cluster."
+variable "azurerm_kubernetes_cluster_agent_pool_profile_min_count" {
+  description = "The minimum number of agent nodes."
+}
+
+variable "azurerm_kubernetes_cluster_agent_pool_profile_max_count" {
+  description = "The maximum number of agent nodes."
 }
 
 # See VM sizes https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes
