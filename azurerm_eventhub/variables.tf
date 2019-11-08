@@ -25,6 +25,10 @@ variable "azurerm_eventhub_namespace_sku" {
 variable "azurerm_eventhub_namespace_capacity" {
   description = "The capacity of the eventhub namespace."
 }
+variable "azurerm_eventhub_namespace_kafka_enabled" {
+  description = "Is Kafka enabled for the EventHub Namespace?"
+  default     = "true"
+}
 
 variable "azurerm_eventhub_partition_count" {
   description = "The eventhub partition count. Should be between 2 and 32."
