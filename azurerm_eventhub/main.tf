@@ -12,6 +12,7 @@ resource "azurerm_eventhub_namespace" "eventhub_ns" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   sku                 = "${var.azurerm_eventhub_namespace_sku}"
   capacity            = "${var.azurerm_eventhub_namespace_capacity}"
+  kafka_enabled       = "${var.azurerm_eventhub_namespace_kafka_enabled}"
 
   tags {
     environment = "${var.environment}"
