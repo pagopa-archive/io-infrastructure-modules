@@ -82,7 +82,7 @@ module "azurerm_function_app_site" {
     clientAffinityEnabled = "false"
 
     siteConfig = {
-      alwaysOn = "true"
+      alwaysOn = "false"
 
       connectionStrings = ["${data.null_data_source.functionapp_connection_strings.*.outputs}"]
 
