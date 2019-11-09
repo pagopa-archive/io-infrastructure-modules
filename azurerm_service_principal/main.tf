@@ -177,7 +177,7 @@ resource "azurerm_key_vault_access_policy" "application_access_policy" {
   tenant_id               = "${var.azurerm_key_vault_tenant_id}"
   object_id               = "${azuread_service_principal.service_principal.object_id}"
   # application_id          = "${azuread_application.application.application_id}"
-  key_permissions         = []
+  key_permissions         = ["get"]
   secret_permissions      = ["get"]
-  certificate_permissions = []
+  certificate_permissions = ["get"]
 }
