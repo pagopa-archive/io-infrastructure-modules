@@ -32,6 +32,15 @@ variable "azurerm_key_vault_secret_name" {
   description = "The keyvault key for service principal secret"
 }
 
+variable "azurerm_key_vault_tenant_id" {
+  description = "The Azure AD ID"
+}
+
+variable "add_to_keyvault_access_policy" {
+  description = "Whether or not to add the service principal to the access list of the Azure keyvault to allow secrets read."
+  default     = false
+}
+
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}

@@ -168,3 +168,16 @@ resource "azurerm_role_assignment" "sp_role" {
   role_definition_name = "${var.azurerm_role_assignment_role_definition_name}"
   principal_id         = "${azuread_service_principal.service_principal.id}"
 }
+
+# Optionally add service principal to keyvault access policies to allow secrets read
+resource "azurerm_key_vault_access_policy" "application_access_policy" {
+  count                   = "${var.app_type == "generic" && var.add_to_keyvault_access_policy ? 1 : 0}"
+  key_vault_id            = "${data.azurerm_key_vault.key_vault.id}"
+
+  tenant_id               = "${var.azurerm_key_vault_tenant_id}"
+  object_id               = "${azuread_service_principal.service_principal.object_id}"
+  # application_id          = "${azuread_application.application.application_id}"
+  key_permissions         = []
+  secret_permissions      = ["get"]
+  certificate_permissions = []
+}
