@@ -53,6 +53,9 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   virtual_network_rule              = {
     id = "${element(data.azurerm_subnet.functions.*.id, 2)}"
   }
+  virtual_network_rule              = {
+    id = "${element(data.azurerm_subnet.functions.*.id, 3)}"
+  }
 }
 
 # Save CosmosDB URI and keys as secrets in the Azure keyvault,
@@ -97,5 +100,19 @@ resource "azurerm_key_vault_secret" "fn2servicesCosmosdbUri" {
 resource "azurerm_key_vault_secret" "fn2servicesCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "fn2servicesCosmosdbKey"
+  value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
+}
+
+# Public functions
+
+resource "azurerm_key_vault_secret" "fn2publicCosmosdbUri" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "fn2publicCosmosdbUri"
+  value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
+}
+
+resource "azurerm_key_vault_secret" "fn2publicCosmosdbKey" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "fn2publicCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
