@@ -41,6 +41,8 @@ module "azurerm_api_management" {
       subnetResourceId = "${data.azurerm_subnet.apim_subnet.id}"
     }
 
+    hostnameConfigurations = "${var.hostnameConfigurations}"
+
     customProperties = "${var.customProperties}"
   }
 
