@@ -23,6 +23,11 @@ variable "functionapp_name" {
   description = "The name suffix of the functionapp."
 }
 
+variable "functionapp_worker_runtime" {
+  default     = "node"
+  description = "Runtime to use. Valid values are: dotnet, node, java, powershell and python."
+}
+
 variable "functionapp_settings" {
   default     = []
   description = "The list of dictionaries containing the application related settings. Each dictionary has a name and a value keys. Values depend by the application."
