@@ -91,6 +91,10 @@ module "azurerm_function_app_site" {
           Name  = "AzureWebJobsStorage"
           Value = "${data.azurerm_storage_account.azurerm_functionapp_storage_account.primary_connection_string}"
         },
+        {
+          Name  = "FUNCTIONS_WORKER_RUNTIME"
+          Value = "${var.functionapp_worker_runtime}"
+        },
         "${data.null_data_source.functionapp_settings.*.outputs}",
         "${data.null_data_source.functionapp_settings_secrets.*.outputs}"
       ]
