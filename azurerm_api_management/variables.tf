@@ -44,7 +44,7 @@ variable "virtualNetworkType" {
   description = "The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an Internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only."
   default     = "external"
 }
-variable "hostnameConfigurations" {
+variable "hostname_configurations" {
   description = "hostname properties"
   default = []
 }
@@ -73,10 +73,18 @@ variable "subnet_name" {
   default     = ""
 }
 
+variable "hostname_configurations_hostname_prefix" {
+  description = "The hostname_configurations hostname prefix. It's automatically suffixed by the environment and domain name."
+  default     = ""
+}
+
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_apim_name            = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-  azurerm_virtual_network_name = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
-  azurerm_subnet_name          = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+  azurerm_resource_group_name         = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_apim_name                   = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
+  azurerm_virtual_network_name        = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name                 = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+  azurerm_key_vault_name              = "${var.resource_name_prefix}-${var.environment}-keyvault"
+  hostname_configurations_hostname    = "${var.hostname_configurations_hostname_prefix}.${var.environment}.io.italia.it"
+  hostname_configurations_keyvault_id = "https://${local.azurerm_key_vault_name}.vault.azure.net/secrets/generated-cert"
 }

@@ -19,31 +19,51 @@ data "azurerm_subnet" "apim_subnet" {
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "null_data_source" "hostname_configurations" {
+  count  = "${length(var.hostname_configurations)}"
+
+  inputs = {
+    type                       = "Proxy"
+    hostName                   = "${lookup(var.hostname_configurations[count.index],"hostname_prefix")}.${var.environment}.io.italia.it"
+    negotiateClientCertificate = "false"
+    defaultSslBinding          = "true"
+    keyVaultId                 = "https://${local.azurerm_key_vault_name}.vault.azure.net/secrets/generated-cert"
+  }
+}
+
 # New infrastructure
 
 module "azurerm_api_management" {
-  source              = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
-  api_version         = "2019-01-01"
-  type                = "Microsoft.ApiManagement/service"
-  name                = "${local.azurerm_apim_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  location            = "${var.location}"
-  enable_output       = true
+  source                 = "git@github.com:teamdigitale/terraform-azurerm-resource.git"
+  api_version            = "2019-01-01"
+  type                   = "Microsoft.ApiManagement/service"
+  name                   = "${local.azurerm_apim_name}"
+  resource_group_name    = "${data.azurerm_resource_group.rg.name}"
+  location               = "${var.location}"
+  enable_output          = true
 
   random_deployment_name = true
 
   properties {
-    publisherEmail     = "${var.publisher_email}"
-    publisherName      = "${var.publisher_name}"
-    virtualNetworkType = "${var.virtualNetworkType}"
+    publisherEmail              = "${var.publisher_email}"
+    publisherName               = "${var.publisher_name}"
+    virtualNetworkType          = "${var.virtualNetworkType}"
 
     virtualNetworkConfiguration = {
       subnetResourceId = "${data.azurerm_subnet.apim_subnet.id}"
     }
 
-    hostnameConfigurations = "${var.hostnameConfigurations}"
+    hostnameConfigurations      = [
+      {
+        type                       = "Proxy"
+        hostName                   = "${local.hostname_configurations_hostname}"
+        negotiateClientCertificate = "false"
+        defaultSslBinding          = "true"
+        keyVaultId                 = "${local.hostname_configurations_keyvault_id}"
+      }
+    ]
 
-    customProperties = "${var.customProperties}"
+    customProperties            = "${var.customProperties}"
   }
 
   sku {
