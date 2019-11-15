@@ -1,4 +1,5 @@
 # Existing infrastructure
+
 data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
@@ -7,17 +8,37 @@ data "azurerm_key_vault" "key_vault" {
   name                = "${local.azurerm_key_vault_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
+
 data "azurerm_key_vault_secret" "certificate" {
-  name         = "apidevioitaliait"
+  name         = "${var.azurerm_key_vault_secret_certificate}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
+
+# Get log_analytics_workspace_id
+data "azurerm_log_analytics_workspace" "workspace" {
+  name                = "${local.azurerm_log_analytics_workspace_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
+# Get Diagnostic settings for AG
+data "azurerm_monitor_diagnostic_categories" "ag" {
+  resource_id = "${azurerm_application_gateway.ag_as_waf.id}"
+}
+
+data "azurerm_subnet" "subnet_ag_frontend" {
+  name                 = "${local.azurerm_subnet_name}"
+  virtual_network_name = "${local.azurerm_virtual_network_name}"
+  resource_group_name  = "${data.azurerm_resource_group.rg.name}"
+}
+
+# New infrastructure
 
 # IP module
 module "gateway_ip" {
     source = "git::git@github.com:teamdigitale/io-infrastructure-modules.git//azurerm_public_ip"
     
     # Public IP module variables
-    azurerm_public_ip_name      = "ag-01"
+    azurerm_public_ip_name      = "${var.public_ip_address_name_suffix}"
     azurerm_resource_group_name = "${data.azurerm_resource_group.rg.name}"
     azurerm_public_ip_sku       = "Standard"
 
@@ -25,24 +46,6 @@ module "gateway_ip" {
     environment                 = "${var.environment}"
     location                    = "${var.location}"
     resource_name_prefix        = "${var.resource_name_prefix}"
-}
-
-# Subnet modules
-module "subnet_frontend" {
-    source = "git::git@github.com:teamdigitale/io-infrastructure-modules.git//azurerm_subnet"
-  
-    # Azure subnet module variables
-    vnet_name                      = "common"
-    subnet_name                    = "ag-frontend"
-    azurerm_subnet_address_prefix  = "172.16.55.0/24"
-    add_security_group             = false
-    azurerm_network_security_rules = []
-    set_subnet_delegation          = false
-
-    # Module Variables
-    environment                    = "${var.environment}"
-    location                       = "${var.location}"
-    resource_name_prefix           = "${var.resource_name_prefix}"
 }
 
 # Application Gateway resource
@@ -57,13 +60,13 @@ resource "azurerm_application_gateway" "ag_as_waf" {
   }
 
   autoscale_configuration {
-      min_capacity = "${var.azurerm_application_gateway_autoscaling_configuration_min_capacity}"
-      max_capacity = "${var.azurerm_application_gateway_autoscaling_configuration_max_capacity}"
+    min_capacity = "${var.azurerm_application_gateway_autoscaling_configuration_min_capacity}"
+    max_capacity = "${var.azurerm_application_gateway_autoscaling_configuration_max_capacity}"
   }
 
   gateway_ip_configuration {
     name      = "${local.azurerm_application_gateway_gateway_ip_configuration_name}"
-    subnet_id = "${element(module.subnet_frontend.azurerm_subnet_id,0)}"
+    subnet_id = "${data.azurerm_subnet.subnet_ag_frontend.id}"
   }
 
   frontend_port {
@@ -120,10 +123,10 @@ resource "azurerm_application_gateway" "ag_as_waf" {
   }
 
   waf_configuration {
-      enabled          = "${var.azurerm_application_gateway_waf_configuration_enabled}"
-      firewall_mode    = "${var.azurerm_application_gateway_waf_configuration_firewall_mode}"
-      rule_set_type    = "${var.azurerm_application_gateway_waf_configuration_rule_set_type}"
-      rule_set_version = "${var.azurerm_application_gateway_waf_configuration_rule_set_version}"
+    enabled          = "${var.azurerm_application_gateway_waf_configuration_enabled}"
+    firewall_mode    = "${var.azurerm_application_gateway_waf_configuration_firewall_mode}"
+    rule_set_type    = "${var.azurerm_application_gateway_waf_configuration_rule_set_type}"
+    rule_set_version = "${var.azurerm_application_gateway_waf_configuration_rule_set_version}"
   }
 
   ssl_certificate {
@@ -133,22 +136,10 @@ resource "azurerm_application_gateway" "ag_as_waf" {
   }
 }
 
-// Get log_analytics_workspace_id
-data "azurerm_log_analytics_workspace" "workspace" {
-  name                = "${local.azurerm_log_analytics_workspace_name}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-}
-
-// Get Diagnostic settings for AG
-data "azurerm_monitor_diagnostic_categories" "ag" {
-  resource_id = "${azurerm_application_gateway.ag_as_waf.id}"
-}
-
-// Add diagnostic to AG
+# Add diagnostic to AG
 resource "azurerm_monitor_diagnostic_setting" "ag" {
-  name               = "${local.azurerm_application_gateway_diagnostic_name}"
-  target_resource_id = "${azurerm_application_gateway.ag_as_waf.id}"
-
+  name                       = "${local.azurerm_application_gateway_diagnostic_name}"
+  target_resource_id         = "${azurerm_application_gateway.ag_as_waf.id}"
   log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.workspace.id}"
 
   log {
