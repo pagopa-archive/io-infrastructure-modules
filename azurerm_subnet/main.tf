@@ -10,25 +10,8 @@ data "azurerm_virtual_network" "vnet" {
 }
 
 # New infrastructure
-
-resource "azurerm_route_table" "route_table" {
-  count               = "${var.add_route_table ? 1 : 0}"
-  name                = "${local.azurerm_route_table_name}"
-  location            = "${data.azurerm_resource_group.rg.location}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-}
-
-resource "azurerm_route" "route" {
-  count               = "${length(var.azurerm_routes)}"
-  name                = "${lookup(var.azurerm_routes[count.index], "name")}"
-  resource_group_name = "${data.azurerm_resource_group.rg.name}"
-  route_table_name    = "${azurerm_route_table.route_table.name}"
-  address_prefix      = "${lookup(var.azurerm_routes[count.index], "address_prefix")}"
-  next_hop_type       = "${lookup(var.azurerm_routes[count.index], "next_hop_type")}"
-}
-
 resource "azurerm_subnet" "subnet" {
-  count                     = "${1 - var.set_subnet_delegation}"
+  count                     = "${var.set_subnet_delegation == 0 && var.add_security_group == 1 ? 1 : 0}"
   name                      = "${local.azurerm_subnet_name}"
   resource_group_name       = "${data.azurerm_resource_group.rg.name}"
   address_prefix            = "${var.azurerm_subnet_address_prefix}"
@@ -38,7 +21,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_subnet" "subnet_delegation" {
-  count                     = "${var.set_subnet_delegation}"
+  count                     = "${var.set_subnet_delegation == 1 && var.add_security_group == 1 ? 1 : 0}"
   name                      = "${local.azurerm_subnet_name}"
   resource_group_name       = "${data.azurerm_resource_group.rg.name}"
   address_prefix            = "${var.azurerm_subnet_address_prefix}"
@@ -56,16 +39,13 @@ resource "azurerm_subnet" "subnet_delegation" {
   }
 }
 
-resource "azurerm_subnet_route_table_association" "route_table_association" {
-  count          = "${var.add_route_table * (1 - var.set_subnet_delegation)}"
-  subnet_id      = "${azurerm_subnet.subnet.id}"
-  route_table_id = "${azurerm_route_table.route_table.id}"
-}
-
-resource "azurerm_subnet_route_table_association" "route_table_association_delegation" {
-  count          = "${var.add_route_table * var.set_subnet_delegation}"
-  subnet_id      = "${azurerm_subnet.subnet_delegation.id}"
-  route_table_id = "${azurerm_route_table.route_table.id}"
+resource "azurerm_subnet" "subnet_no_delegation_no_sg" {
+  count                     = "${var.set_subnet_delegation == 0 && var.add_security_group == 0 ? 1 : 0}"
+  name                      = "${local.azurerm_subnet_name}"
+  resource_group_name       = "${data.azurerm_resource_group.rg.name}"
+  address_prefix            = "${var.azurerm_subnet_address_prefix}"
+  virtual_network_name      = "${data.azurerm_virtual_network.vnet.name}"
+  service_endpoints         = "${var.azurerm_subnet_service_endpoints}"
 }
 
 resource "azurerm_network_security_group" "security_group" {
@@ -91,13 +71,13 @@ resource "azurerm_network_security_rule" "security_rule" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "security_group_association" {
-  count                     = "${var.add_security_group * (1 - var.set_subnet_delegation)}"
+  count                     = "${var.set_subnet_delegation == 0 && var.add_security_group == 1 ? 1 : 0}"
   subnet_id                 = "${azurerm_subnet.subnet.id}"
   network_security_group_id = "${azurerm_network_security_group.security_group.id}"
 }
 
 resource "azurerm_subnet_network_security_group_association" "security_group_association_delegation" {
-  count                     = "${var.add_security_group * var.set_subnet_delegation}"
+  count                     = "${var.set_subnet_delegation == 1 && var.add_security_group == 1 ? 1 : 0}"
   subnet_id                 = "${azurerm_subnet.subnet_delegation.id}"
   network_security_group_id = "${azurerm_network_security_group.security_group.id}"
 }
