@@ -18,12 +18,23 @@ variable "azurerm_public_ip_allocation_method" {
   default     = "Dynamic"
 }
 
+variable "application_gateway_hostname" {
+  description = "The hostname of the application gateway (it's automatically postfixed by .env-name.domain)"
+  default     = "api"
+}
+
+variable "application_gateway_name_suffix" {
+  description = "The application gateway name suffix."
+}
+
 variable "azurerm_application_gateway_sku_name" {
   description = "The application gateway sku name."
+  default     = "WAF_v2"
 }
 
 variable "azurerm_application_gateway_sku_tier" {
   description = "The application gateway sku tier"
+  default     = "WAF_v2"
 }
 
 variable "azurerm_application_gateway_autoscaling_configuration_min_capacity" {
@@ -48,7 +59,7 @@ variable "azurerm_application_gateway_waf_configuration_enabled" {
 
 variable "azurerm_application_gateway_waf_configuration_firewall_mode" {
   description = "he Web Application Firewall Mode"
-  default     = "Prevention"
+  default     = "Detection"
 }
 
 variable "azurerm_application_gateway_waf_configuration_rule_set_type" {
@@ -88,20 +99,17 @@ variable "azurerm_application_gateway_probe_unhealthy_threshold" {
 
 variable "log_analytics_workspace_name" {
   description = "The Log Analytics workspace name."
+  default     = "log-analytics-workspace"
 }
 
 variable "azurerm_application_gateway_diagnostic_logs_retention" {
   description = "The number of days for which this Retention Policy should apply."
-  default     = 15
+  default     = 30
 }
 
 variable "azurerm_application_gateway_diagnostic_metrics_retention" {
   description = "The number of days for which this Retention Policy should apply."
-  default     = 15
-}
-
-variable "azurerm_key_vault_secret_certificate" {
-  description = "The name of the Azure Keyvault secret that contains the Application Gateway certificate."
+  default     = 30
 }
 
 variable "public_ip_address_name_suffix" {
@@ -116,23 +124,34 @@ variable "subnet_name_suffix" {
   description = "The name suffix of the subnet where nodes and external load balancers' IPs will be created."
 }
 
+variable "configure_ssl" {
+  description = "Whether or not to configure SSL."
+  default     = true
+}
+
 locals {
+  # Define resource names based on the following convention:
+  # {resource_name_prefix}-{environment}-{resource_type}[-resource_name_suffix]
   azurerm_resource_group_name                                = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_key_vault_name                                     = "${var.resource_name_prefix}-${var.environment}-keyvault"
-  azurerm_application_gateway_name                           = "${var.resource_name_prefix}-${var.environment}-ag"
-  azurerm_application_gateway_gateway_ip_configuration_name  = "${var.resource_name_prefix}-${var.environment}-ag-ip"
-  azurerm_application_gateway_frontend_port_name             = "${var.resource_name_prefix}-${var.environment}-ag-feport"
-  azurerm_application_gateway_probe_name                     = "${var.resource_name_prefix}-${var.environment}-ag-probe"
-  azurerm_application_gateway_backend_address_pool_name      = "${var.resource_name_prefix}-${var.environment}-ag-beap"
-  azurerm_application_gateway_frontend_ip_configuration_name = "${var.resource_name_prefix}-${var.environment}-ag-feip"
-  azurerm_application_gateway_backend_http_setting_name      = "${var.resource_name_prefix}-${var.environment}-ag-be-htst"
-  azurerm_application_gateway_http_listener_name             = "${var.resource_name_prefix}-${var.environment}-ag-httplstn"
-  azurerm_application_gateway_https_listener_name            = "${var.resource_name_prefix}-${var.environment}-ag-httpslstn"
-  azurerm_application_gateway_request_routing_rule_name      = "${var.resource_name_prefix}-${var.environment}-ag-rqrt"
-  azurerm_application_gateway_redirect_configuration_name    = "${var.resource_name_prefix}-${var.environment}-ag-rdrcfg"
-  azurerm_application_gateway_ssl_certificate_name           = "${var.resource_name_prefix}-${var.environment}-ag-ssl"
-  azurerm_application_gateway_diagnostic_name                = "${var.resource_name_prefix}-${var.environment}-ag-diagnostic"
+  azurerm_application_gateway_name                           = "${var.resource_name_prefix}-${var.environment}-ag-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_gateway_ip_configuration_name  = "${var.resource_name_prefix}-${var.environment}-ag-ip-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_frontend_port_name             = "${var.resource_name_prefix}-${var.environment}-ag-feport-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_probe_name                     = "${var.resource_name_prefix}-${var.environment}-ag-probe-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_backend_address_pool_name      = "${var.resource_name_prefix}-${var.environment}-ag-beap-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_frontend_ip_configuration_name = "${var.resource_name_prefix}-${var.environment}-ag-feip-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_backend_http_setting_name      = "${var.resource_name_prefix}-${var.environment}-ag-be-htst-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_http_listener_name             = "${var.resource_name_prefix}-${var.environment}-ag-httplstn-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_https_listener_name            = "${var.resource_name_prefix}-${var.environment}-ag-httpslstn-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_request_routing_rule_name      = "${var.resource_name_prefix}-${var.environment}-ag-rqrt-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_redirect_configuration_name    = "${var.resource_name_prefix}-${var.environment}-ag-rdrcfg-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_ssl_certificate_name           = "${var.resource_name_prefix}-${var.environment}-ag-ssl-${var.application_gateway_name_suffix}"
+  azurerm_application_gateway_diagnostic_name                = "${var.resource_name_prefix}-${var.environment}-ag-diagnostic-${var.application_gateway_name_suffix}"
   azurerm_log_analytics_workspace_name                       = "${var.resource_name_prefix}-${var.environment}-log-analytics-workspace-${var.log_analytics_workspace_name}"
   azurerm_virtual_network_name                               = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name_suffix}"
   azurerm_subnet_name                                        = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name_suffix}"
+  azurerm_public_ip_name                                     = "${var.resource_name_prefix}-${var.environment}-pip-${var.public_ip_address_name_suffix}"
+
+  application_gateway_host_name                              = "${var.application_gateway_hostname}.${var.environment}.io.italia.it"
+  azurerm_key_vault_secret_certificate                       = "application-gateway-${var.application_gateway_name_suffix}-cert"
 }
