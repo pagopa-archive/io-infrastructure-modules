@@ -75,6 +75,7 @@ variable "azurerm_application_gateway_waf_configuration_rule_set_version" {
 variable "azurerm_application_gateway_backend_address_pool_ip_addresses" {
   description = "The private ip address associated to the APIM"
   type        = "list"
+  default     = []
 }
 
 variable "azurerm_application_gateway_probe_interval" {
@@ -122,11 +123,6 @@ variable "vnet_name_suffix" {
 
 variable "subnet_name_suffix" {
   description = "The name suffix of the subnet where nodes and external load balancers' IPs will be created."
-}
-
-variable "configure_ssl" {
-  description = "Whether or not to configure SSL."
-  default     = true
 }
 
 locals {
