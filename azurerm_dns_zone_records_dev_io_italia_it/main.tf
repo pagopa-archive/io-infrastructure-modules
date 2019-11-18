@@ -52,7 +52,7 @@ resource "azurerm_dns_a_record" "application_gateway_a_record" {
   zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   ttl                 = "${var.dns_record_ttl}"
-  records             = ["40.119.152.156"]
+  records             = ["51.105.102.218"]
 }
 
-# Application Gateway
+# Application Gateway end
