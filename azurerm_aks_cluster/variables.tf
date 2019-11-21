@@ -70,10 +70,6 @@ variable "subnet_name" {
   description = "The name suffix of the subnet where nodes and external load balancers' IPs will be created."
 }
 
-variable "azurerm_kubernetes_cluster_network_profile_pod_cidr" {
-  description = "The CIDR to use for pod IP addresses."
-}
-
 variable "azurerm_kubernetes_cluster_network_profile_service_cidr" {
   description = "The Network Range used by the Kubernetes service."
 }

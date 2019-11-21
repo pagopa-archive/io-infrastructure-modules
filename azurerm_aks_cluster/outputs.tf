@@ -18,11 +18,6 @@ output "azurerm_virtual_network_name" {
   value       = "${local.azurerm_virtual_network_name}"
 }
 
-output "azurerm_kubernetes_cluster_network_profile_pod_cidr" {
-  description = "The CIDR to use for pod IP addresses."
-  value       = "${var.azurerm_kubernetes_cluster_network_profile_pod_cidr}"
-}
-
 output "azurerm_kubernetes_cluster_network_profile_service_cidr" {
   description = "The Network Range used by the Kubernetes service."
   value       = "${var.azurerm_kubernetes_cluster_network_profile_service_cidr}"

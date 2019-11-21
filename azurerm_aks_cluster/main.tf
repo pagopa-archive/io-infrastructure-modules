@@ -1,18 +1,8 @@
 # The module brings up a Kubernetes cluster (in Azure AKS) of with an arbitrary
 # number of nodes. Kubernetes nodes are automatically created by Azure in a
-# separate resource group (name starting with MC). The Kubenet CNI plugin is used.
-# 
-# Nodes IP addreses are allocated in the subnet specified with subnet_id (so are reachable from other vnets)
+# separate resource group (name starting with MC). The Azure CNI plugin is used.
 #
-# PODs have IPs in the pods_cidr specified (not directly reachable from other vnets)
-#
-# ClusterIPs are allocated in the service_cidr specified (not directly reachable from other vnets)
-#
-# Private external service IPs (for loadbalancers) are allocated in the same nodes subnet, specified
-# with subnet_id (so are reachable from other vnets)
-# 
-# Public external service IPs (for loadbalancers) are directly allocated from Azure. To use a static
-# public IP instead, look at the azure tutorials and documentation
+# PODs get an IP on the subnet specified (reachable from other vnets)
 
 # Existing infrastructure
 
@@ -101,6 +91,7 @@ resource "azurerm_kubernetes_cluster" "azurerm_kubernetes_cluster" {
   agent_pool_profile {
     name                = "${local.azurerm_kubernetes_cluster_agent_pool_profile_name}"
     type                = "VirtualMachineScaleSets"
+    count               = "${var.azurerm_kubernetes_cluster_agent_pool_profile_min_count}"
     min_count           = "${var.azurerm_kubernetes_cluster_agent_pool_profile_min_count}"
     max_count           = "${var.azurerm_kubernetes_cluster_agent_pool_profile_max_count}"
     enable_auto_scaling = true
@@ -123,8 +114,7 @@ resource "azurerm_kubernetes_cluster" "azurerm_kubernetes_cluster" {
   }
 
   network_profile {
-    network_plugin     = "kubenet"
-    pod_cidr           = "${var.azurerm_kubernetes_cluster_network_profile_pod_cidr}"
+    network_plugin     = "azure"
     service_cidr       = "${var.azurerm_kubernetes_cluster_network_profile_service_cidr}"
     dns_service_ip     = "${var.azurerm_kubernetes_cluster_network_profile_dns_service_ip}"
     docker_bridge_cidr = "${var.azurerm_kubernetes_cluster_network_profile_docker_bridge_cidr}"
