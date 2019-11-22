@@ -17,7 +17,7 @@ variable "applications_insights" {
 
 variable "azurerm_application_insights_instrumentation_key" {
   description = "The secret name used for app insights instrumentation key."
-  default = "fn2CommonAppInsightsInstrumentationKey"
+  default     = "fn2CommonAppInsightsInstrumentationKey"
 }
 
 
