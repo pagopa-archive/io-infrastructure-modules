@@ -72,5 +72,3 @@ resource "azurerm_key_vault_secret" "fn2CommonCosmosdbKey" {
   name         = "fn2CommonCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
-
-
