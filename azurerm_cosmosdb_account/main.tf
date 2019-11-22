@@ -61,58 +61,16 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 # Save CosmosDB URI and keys as secrets in the Azure keyvault,
 # in order to be used by the functions
 
-# Admin functions
-
-resource "azurerm_key_vault_secret" "fn2adminCosmosdbUri" {
+resource "azurerm_key_vault_secret" "fn2CommonCosmosdbUri" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2adminCosmosdbUri"
+  name         = "fn2CommonCosmosdbUri"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
 }
 
-resource "azurerm_key_vault_secret" "fn2adminCosmosdbKey" {
+resource "azurerm_key_vault_secret" "fn2CommonCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2adminCosmosdbKey"
+  name         = "fn2CommonCosmosdbKey"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
 
-# App functions
 
-resource "azurerm_key_vault_secret" "fn2appCosmosdbUri" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2appCosmosdbUri"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
-}
-
-resource "azurerm_key_vault_secret" "fn2aappCosmosdbKey" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2appCosmosdbKey"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
-}
-
-# Services functions
-
-resource "azurerm_key_vault_secret" "fn2servicesCosmosdbUri" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2servicesCosmosdbUri"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
-}
-
-resource "azurerm_key_vault_secret" "fn2servicesCosmosdbKey" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2servicesCosmosdbKey"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
-}
-
-# Public functions
-
-resource "azurerm_key_vault_secret" "fn2publicCosmosdbUri" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2publicCosmosdbUri"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
-}
-
-resource "azurerm_key_vault_secret" "fn2publicCosmosdbKey" {
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2publicCosmosdbKey"
-  value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
-}
