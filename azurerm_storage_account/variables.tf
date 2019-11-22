@@ -46,10 +46,15 @@ variable "azurerm_storage_account_network_rules_default_action" {
   default     = "Deny"
 }
 
+variable "create_keyvault_secret" {
+  description = "Whether or not to automatically create a keyvault secret with the connection string named fn2-common-sa-xxx-primary-connection-string."
+  default     = false
+}
 
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-{environment}-RESOURCE_TYPE-suffix
   azurerm_resource_group_name  = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_storage_account_name = "${var.resource_name_prefix}${var.environment}sa${var.storage_account_name}"
+  azurerm_key_vault_name       = "${var.resource_name_prefix}-${var.environment}-keyvault"
 }

@@ -17,6 +17,12 @@ data "azurerm_subnet" "subnets" {
   resource_group_name  = "${data.azurerm_resource_group.rg.name}"
 }
 
+data "azurerm_key_vault" "key_vault" {
+  count               = "${var.create_keyvault_secret}"
+  name                = "${local.azurerm_key_vault_name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+}
+
 # New infrastructure
 
 resource "azurerm_storage_account" "storage_account" {
@@ -49,4 +55,18 @@ resource "azurerm_storage_account" "storage_account_no_firewall" {
   tags = {
     environment = "${var.environment}"
   }
+}
+
+resource "azurerm_key_vault_secret" "storage_account_secret" {
+  count        = "${(var.create_keyvault_secret == 1) && (var.set_firewall == 1) ? 1 : 0}"
+  name         = "fn2-common-sa-${var.storage_account_name}-primary-connection-string"
+  value        = "${azurerm_storage_account.storage_account.primary_connection_string}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+resource "azurerm_key_vault_secret" "storage_account_secret_no_firewall" {
+  count        = "${(var.create_keyvault_secret == 1) && (var.set_firewall == 0) ? 1 : 0}"
+  name         = "fn2-common-sa-${var.storage_account_name}-primary-connection-string"
+  value        = "${azurerm_storage_account.storage_account_no_firewall.primary_connection_string}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }

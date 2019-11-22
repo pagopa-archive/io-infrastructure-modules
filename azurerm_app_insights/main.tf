@@ -24,4 +24,3 @@ resource "azurerm_key_vault_secret" "azurerm_application_insights" {
   value        = "${azurerm_application_insights.azurerm_application_insights.instrumentation_key}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
-
