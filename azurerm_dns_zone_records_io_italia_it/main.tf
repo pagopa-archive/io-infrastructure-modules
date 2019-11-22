@@ -44,6 +44,26 @@ resource "azurerm_dns_ns_record" "dev_ns_records" {
 }
 # dev subzone delegation end
 
+# prod subzone delegation start
+resource "azurerm_dns_ns_record" "prod_ns_records" {
+  name                = "prod"
+  zone_name           = "${var.dns_zone_suffix}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  ttl                 = "${var.dns_record_ttl}"
+
+  records = [
+    "ns1-04.azure-dns.com",
+    "ns2-04.azure-dns.net",
+    "ns3-04.azure-dns.org",
+    "ns4-04.azure-dns.info"
+  ]
+
+  tags = {
+    environment = "${var.environment}"
+  }
+}
+# prod subzone delegation end
+
 # Website start
 
 resource "azurerm_dns_a_record" "website_a_record" {
