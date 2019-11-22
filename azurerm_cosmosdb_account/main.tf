@@ -63,12 +63,12 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 
 resource "azurerm_key_vault_secret" "fn2CommonCosmosdbUri" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2CommonCosmosdbUri"
+  name         = "fn2-commons-cosmosdb-uri"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.endpoint}"
 }
 
 resource "azurerm_key_vault_secret" "fn2CommonCosmosdbKey" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "fn2CommonCosmosdbKey"
+  name         = "fn2-commons-cosmosdb-key"
   value        = "${azurerm_cosmosdb_account.cosmosdb_account.primary_master_key}"
 }
