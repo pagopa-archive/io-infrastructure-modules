@@ -8,23 +8,23 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 data "azurerm_key_vault_secret" "notification_hub_gcm_key" {
-  name         = "nhub01gcmkey"
+  name         = "notification-hub-01-gc-mkey"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 data "azurerm_key_vault_secret" "notification_hub_bundle_id" {
-  name         = "nhub01bundleid"
+  name         = "notification-hub-01-bundle-id"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 data "azurerm_key_vault_secret" "notification_hub_key_id" {
-  name         = "nhub01keyid"
+  name         = "notification-hub-01-key-id"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 data "azurerm_key_vault_secret" "notification_hub_team_id" {
-  name         = "nhub01teamid"
+  name         = "notification-hub-01-team-id"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 data "azurerm_key_vault_secret" "notification_hub_token_id" {
-  name         = "nhub01token"
+  name         = "notification-hub-01-token"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 
