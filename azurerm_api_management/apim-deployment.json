@@ -1,0 +1,88 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"publisherEmail": {
+			"type": "string",
+			"minLength": 1,
+			"metadata": {
+				"description": "The email address of the owner of the service"
+			}
+		},
+		"publisherName": {
+			"type": "string",
+			"minLength": 1,
+			"metadata": {
+				"description": "The name of the owner of the service"
+			}
+		},
+		"sku": {
+			"type": "string",
+			"allowedValues": ["Developer","Standard","Premium"],
+			"defaultValue": "Developer",
+			"metadata": {
+				"description": "The pricing tier of this API Management service"
+			}
+		},
+		"skuCount": {
+			"type": "int",
+			"defaultValue": 1,
+			"metadata": {
+				"description": "The instance size of this API Management service."
+			}
+		},
+		"proxyCustomHostname1": {
+			"type": "string",
+			"metadata": {
+				"description": "Proxy Custom hostname 1."
+			}
+		},
+		"keyVaultIdToCertificate": {
+			"type": "string",
+			"metadata": {
+				"description": "Reference to the KeyVault Certificate."
+			}
+		},
+		"apimName": {
+			"type": "string",
+			"metadata": {
+				"description": "The APIM name."
+			}
+		},
+		"subnetRef": {
+			"type": "string",
+			"metadata": {
+				"description": "The subnet id used by the APIM."
+			}
+		}
+	},
+	"resources": [{
+		"apiVersion": "2017-03-01",
+		"name": "[parameters('apimName')]",
+		"type": "Microsoft.ApiManagement/service",
+		"location": "[resourceGroup().location]",
+		"tags": {
+			
+		},
+		"sku": {
+			"name": "[parameters('sku')]",
+			"capacity": "[parameters('skuCount')]"
+		},
+		"properties": {
+			"publisherEmail": "[parameters('publisherEmail')]",
+			"publisherName": "[parameters('publisherName')]",
+			"virtualNetworkType": "Internal",
+			"virtualNetworkConfiguration": {
+				"subnetResourceId": "[parameters('subnetRef')]"
+			},
+			"hostnameConfigurations": [{
+				"type": "Proxy",
+				"hostName": "[parameters('proxyCustomHostname1')]",
+				"keyVaultId": "[parameters('keyVaultIdToCertificate')]"
+			}]
+		},
+		"identity": {
+			"type": "systemAssigned"
+		}
+	}]
+}

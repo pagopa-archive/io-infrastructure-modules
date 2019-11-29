@@ -1,5 +1,5 @@
 {
-	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"publisherEmail": {
@@ -11,6 +11,7 @@
 		},
 		"publisherName": {
 			"type": "string",
+			"defaultValue": "Contoso",
 			"minLength": 1,
 			"metadata": {
 				"description": "The name of the owner of the service"
@@ -18,7 +19,9 @@
 		},
 		"sku": {
 			"type": "string",
-			"allowedValues": ["Developer","Standard","Premium"],
+			"allowedValues": ["Developer",
+			"Standard",
+			"Premium"],
 			"defaultValue": "Developer",
 			"metadata": {
 				"description": "The pricing tier of this API Management service"
@@ -31,38 +34,52 @@
 				"description": "The instance size of this API Management service."
 			}
 		},
+		"keyVaultName": {
+			"type": "string",
+			"metadata": {
+				"description": "Name of the vault"
+			}
+		},
 		"proxyCustomHostname1": {
 			"type": "string",
 			"metadata": {
-				"description": "Proxy Custom hostname 1."
+				"description": "Proxy Custom hostname."
 			}
 		},
 		"keyVaultIdToCertificate": {
 			"type": "string",
 			"metadata": {
-				"description": "Reference to the KeyVault Certificate."
+				"description": "Reference to the KeyVault certificate. https://contoso.vault.azure.net/secrets/contosogatewaycertificate."
 			}
 		},
-		"apimName": {
+		"apiName": {
 			"type": "string",
 			"metadata": {
-				"description": "The APIM name."
+				"description": "The APIM name"
+			}
+		},
+		"location": {
+			"type": "string",
+			"metadata": {
+				"description": "The location for the APIM name"
 			}
 		},
 		"subnetRef": {
 			"type": "string",
 			"metadata": {
-				"description": "The subnet id used by the APIM."
+				"description": "The location for the APIM name"
 			}
 		}
 	},
+	"variables": {
+    	"apimServiceIdentityResourceId": "[concat(resourceId('Microsoft.ApiManagement/service', parameters('apiName')),'/providers/Microsoft.ManagedIdentity/Identities/default')]"
+	},
 	"resources": [{
-		"apiVersion": "2017-03-01",
-		"name": "[parameters('apimName')]",
+		"apiVersion": "2019-01-01",
+		"name": "[parameters('apiName')]",
 		"type": "Microsoft.ApiManagement/service",
-		"location": "[resourceGroup().location]",
+		"location": "[parameters('location')]",
 		"tags": {
-			
 		},
 		"sku": {
 			"name": "[parameters('sku')]",
@@ -74,15 +91,52 @@
 			"virtualNetworkType": "Internal",
 			"virtualNetworkConfiguration": {
 				"subnetResourceId": "[parameters('subnetRef')]"
-			},
-			"hostnameConfigurations": [{
-				"type": "Proxy",
-				"hostName": "[parameters('proxyCustomHostname1')]",
-				"keyVaultId": "[parameters('keyVaultIdToCertificate')]"
-			}]
+			}
 		},
 		"identity": {
 			"type": "systemAssigned"
+		}
+	},
+	{
+		"type": "Microsoft.KeyVault/vaults/accessPolicies",
+		"name": "[concat(parameters('keyVaultName'), '/add')]",
+		"apiVersion": "2015-06-01",
+		"dependsOn": [
+			"[resourceId('Microsoft.ApiManagement/service', parameters('apiName'))]"
+		],
+		"properties": {
+			"accessPolicies": [{
+				"tenantId": "[reference(variables('apimServiceIdentityResourceId'), '2018-11-30').tenantId]",
+				"objectId": "[reference(variables('apimServiceIdentityResourceId'), '2018-11-30').principalId]",
+				"permissions": {
+					"secrets": ["get"]
+				}
+			}]
+		}
+	},
+	{
+		"apiVersion": "2017-05-10",
+		"name": "apimWithKeyVault",
+		"type": "Microsoft.Resources/deployments",
+		"dependsOn": [
+		"[resourceId('Microsoft.ApiManagement/service', parameters('apiName'))]"
+		],
+		"properties": {
+			"mode": "incremental",
+			"templateLink": {
+				"uri": "https://raw.githubusercontent.com/teamdigitale/io-infrastructure-modules/master/azurerm_api_management/apim-deployment.json",
+				"contentVersion": "1.0.0.0"
+			},
+			"parameters": {
+				"publisherEmail": { "value": "[parameters('publisherEmail')]"},
+				"publisherName": { "value": "[parameters('publisherName')]"},
+				"sku": { "value": "[parameters('sku')]"},
+				"skuCount": { "value": "[parameters('skuCount')]"},
+				"proxyCustomHostname1": {"value" : "[parameters('proxyCustomHostname1')]"},
+				"keyVaultIdToCertificate": {"value" : "[parameters('keyVaultIdToCertificate')]"},
+				"apimName": {"value" : "[parameters('apiName')]"},
+				"subnetRef": {"value" : "[parameters('subnetRef')]"}
+			}
 		}
 	}]
 }
