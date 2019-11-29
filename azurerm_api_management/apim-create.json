@@ -124,7 +124,7 @@
 		"properties": {
 			"mode": "incremental",
 			"templateLink": {
-				"uri": "https://raw.githubusercontent.com/teamdigitale/io-infrastructure-modules/master/azurerm_api_management/apim-deployment.json",
+				"uri": "https://raw.githubusercontent.com/teamdigitale/io-infrastructure-modules/master/azurerm_api_management/apim-update.json",
 				"contentVersion": "1.0.0.0"
 			},
 			"parameters": {

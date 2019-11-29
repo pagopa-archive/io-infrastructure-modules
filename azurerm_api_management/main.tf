@@ -28,11 +28,11 @@ data "azurerm_client_config" "current" {}
 
 # New infrastructure
 
-resource "azurerm_template_deployment" "APIM" {
+resource "azurerm_template_deployment" "apim" {
   name                = "apim"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 
-  template_body = "${file("apim.json")}"
+  template_body = "${file("apim-create.json")}"
 
   parameters = {
     "publisherEmail"           = "${var.publisher_email}"
