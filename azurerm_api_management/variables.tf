@@ -80,11 +80,11 @@ variable "hostname_configurations_hostname_prefix" {
 
 locals {
   # Define resource names based on the following convention:  # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  azurerm_resource_group_name         = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_apim_name                   = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
-  azurerm_virtual_network_name        = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
-  azurerm_subnet_name                 = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
-  azurerm_key_vault_name              = "${var.resource_name_prefix}-${var.environment}-keyvault"
-  hostname_configurations_hostname    = "${var.hostname_configurations_hostname_prefix}.${var.environment}.io.italia.it"
-  hostname_configurations_keyvault_id = "https://${local.azurerm_key_vault_name}.vault.azure.net/secrets/generated-cert"
+  azurerm_resource_group_name               = "${var.resource_name_prefix}-${var.environment}-rg"
+  azurerm_apim_name                         = "${var.resource_name_prefix}-${var.environment}-apim-${var.apim_name}"
+  azurerm_virtual_network_name              = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
+  azurerm_subnet_name                       = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
+  azurerm_key_vault_name                    = "${var.resource_name_prefix}-${var.environment}-keyvault"
+  hostname_configurations_hostname          = "${var.hostname_configurations_hostname_prefix}${var.environment == "prod" ? "." : ".${var.environment}."}io.italia.it"
+  hostname_configurations_keyvault_id       = "https://${local.azurerm_key_vault_name}.vault.azure.net/secrets/generated-cert"
 }
