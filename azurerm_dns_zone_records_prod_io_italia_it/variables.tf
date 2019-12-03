@@ -14,8 +14,8 @@ variable "resource_name_prefix" {
 
 # DNS module specific variables
 
-variable "kubernetes_resource_group_name" {
-  description = "The resource group of the kubernetes cluster."
+variable "aks_cluster_name" {
+  description = "The name of the Kubernetes cluster."
 }
 
 variable "kubernetes_public_ip_name" {
@@ -35,10 +35,6 @@ variable "dns_record_ttl" {
   description = "The DNS records TTL in seconds."
 }
 
-variable "aks_cluster_name" {
-  description = "The name of the Kubernetes cluster."
-}
-
 variable "kubernetes_cname_records" {
   type        = "list"
   description = "The list of DNS CNAME records. Keys must include name, record (both string values)."
@@ -51,5 +47,4 @@ locals {
   # Define resource names based on the following convention:
   # {resource_name_prefix}-{environment}-{resource_type}-{resource_name}
   azurerm_resource_group_name                = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_kubernetes_cluster_name            = "${var.resource_name_prefix}-${var.environment}-aks-${var.aks_cluster_name}"
 }
