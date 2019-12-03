@@ -81,6 +81,18 @@ resource "azurerm_dns_a_record" "website_a_record" {
 
 # Website end
 
+# Application Gateway start
+
+resource "azurerm_dns_a_record" "application_gateway_a_record" {
+  name                = "api"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  records             = ["51.105.190.163"]
+}
+
+# Application Gateway end
+
 # Kubernetes start
 
 resource "azurerm_dns_a_record" "kubernetes_a_record" {
