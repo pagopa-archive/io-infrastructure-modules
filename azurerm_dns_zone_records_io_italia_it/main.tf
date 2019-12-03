@@ -97,7 +97,7 @@ resource "azurerm_dns_cname_record" "kubernetes_cname_records_new" {
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
   ttl                 = "${var.dns_record_ttl}"
-  record              = "${var.kubernetes_cname_records[count.index]}.prod"
+  record              = "${var.kubernetes_cname_records[count.index]}.prod.io.italia.it"
 }
 
 # Kubernetes end
