@@ -148,6 +148,6 @@ locals {
   azurerm_subnet_name                                        = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name_suffix}"
   azurerm_public_ip_name                                     = "${var.resource_name_prefix}-${var.environment}-pip-${var.public_ip_address_name_suffix}"
 
-  application_gateway_host_name                              = "${var.application_gateway_hostname}.${var.environment}.io.italia.it"
+  application_gateway_host_name                              = "${var.application_gateway_hostname}${var.environment == "prod" ? "." : ".${var.environment}."}io.italia.it"
   azurerm_key_vault_secret_certificate                       = "application-gateway-${var.application_gateway_name_suffix}-cert"
 }
