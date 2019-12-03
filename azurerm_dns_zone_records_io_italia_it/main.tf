@@ -20,10 +20,6 @@ data "azurerm_dns_zone" "dns_zone" {
 
 # New infrastructure
 
-# The module dynamically creates only A and CNAME records, as other record
-# type still don't support dynamical record value definition (which will
-# be instead supported from Terraform 0.12 with loops)
-
 # dev subzone delegation start
 resource "azurerm_dns_ns_record" "dev_ns_records" {
   name                = "dev"
@@ -95,8 +91,21 @@ resource "azurerm_dns_a_record" "application_gateway_a_record" {
 
 # Kubernetes start
 
+resource "azurerm_dns_cname_record" "kubernetes_cname_records_new" {
+  count               = "${length(var.kubernetes_cname_records)}"
+  name                = "${var.kubernetes_cname_records[count.index]}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  record              = "${var.kubernetes_cname_records[count.index]}.prod"
+}
+
+# Kubernetes end
+
+# Old (Agid) Kubernetes start
+
 resource "azurerm_dns_a_record" "kubernetes_a_record" {
-  name                = "*.${var.aks_cluster_name}"
+  name                = "*.${var.aks_cluster_name_old}"
   zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   ttl                 = "${var.dns_record_ttl}"
@@ -104,19 +113,18 @@ resource "azurerm_dns_a_record" "kubernetes_a_record" {
 }
 
 resource "azurerm_dns_cname_record" "kubernetes_cname_records" {
-  count               = "${length(var.kubernetes_cname_records)}"
-  name                = "${var.kubernetes_cname_records[count.index]}"
+  count               = "${length(var.kubernetes_cname_records_old)}"
+  name                = "${var.kubernetes_cname_records_old[count.index]}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
   zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
   ttl                 = "${var.dns_record_ttl}"
-  record              = "${var.kubernetes_cname_records[count.index]}.${var.aks_cluster_name}"
+  record              = "${var.kubernetes_cname_records_old[count.index]}.${var.aks_cluster_name_old}"
 }
 
-# Kubernetes end
+# Old (Agid) Kubernetes end
 
-# Developers portal start
+# Old (Agid) developer portal start
 
-# New dev portal
 resource "azurerm_dns_cname_record" "developers_cname_records" {
   count               = "${length(var.developers_cname_records)}"
   name                = "${lookup(var.developers_cname_records[count.index], "name")}"
@@ -126,7 +134,7 @@ resource "azurerm_dns_cname_record" "developers_cname_records" {
   record              = "${lookup(var.developers_cname_records[count.index], "value")}"
 }
 
-# Developers portal end
+# Old (Agid) developer portal end
 
 # Mailgun start
 
@@ -148,7 +156,7 @@ resource "azurerm_dns_mx_record" "mailgun_mx_record" {
   }
 }
 
-# cname for Mailgun API
+# Mailgun API CNAME
 resource "azurerm_dns_cname_record" "mailgun_cname_record" {
   name                = "${lookup(var.mailgun_cname_record, "name")}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"

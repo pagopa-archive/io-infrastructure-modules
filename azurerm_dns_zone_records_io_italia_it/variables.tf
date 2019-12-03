@@ -35,18 +35,25 @@ variable "dns_record_ttl" {
   description = "The DNS records TTL in seconds."
 }
 
-variable "aks_cluster_name" {
-  description = "The name of the Kubernetes cluster."
+variable "aks_cluster_name_old" {
+  description = "The name of the old (Agid) Kubernetes cluster."
+}
+
+variable "kubernetes_cname_records_old" {
+  type        = "list"
+  description = "The list of old Kubernetes (Agid) DNS CNAME records. Keys must include name, record (both string values)."
+  default     = []
+}
+
+variable "developers_cname_records" {
+  type        = "list"
+  description = "The list of dictionaries with the name and the value of the developer portal related CNAME records."
 }
 
 variable "kubernetes_cname_records" {
   type        = "list"
   description = "The list of DNS CNAME records. Keys must include name, record (both string values)."
-}
-
-variable "developers_cname_records" {
-  description = "The list of dictionaries with the name and the value of the developer portal related CNAME records."
-  type        = "list"
+  default     = []
 }
 
 variable "mailgun_cname_record" {
@@ -75,5 +82,4 @@ locals {
   # Define resource names based on the following convention:
   # {resource_name_prefix}-{environment}-{resource_type}-{resource_name}
   azurerm_resource_group_name                = "${var.resource_name_prefix}-${var.environment}-rg"
-  azurerm_kubernetes_cluster_name            = "${var.resource_name_prefix}-${var.environment}-aks-${var.aks_cluster_name}"
 }
