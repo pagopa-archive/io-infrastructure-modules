@@ -4,10 +4,6 @@ data "azurerm_resource_group" "rg" {
   name = "${local.azurerm_resource_group_name}"
 }
 
-data "azurerm_resource_group" "aks_rg" {
-  name = "${var.kubernetes_resource_group_name}"
-}
-
 data "azurerm_dns_zone" "dns_zone" {
   name                = "${local.azurerm_dns_zone_name}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
@@ -15,7 +11,7 @@ data "azurerm_dns_zone" "dns_zone" {
 
 data "azurerm_public_ip" "kubernetes_public_ip" {
   name                = "${local.kubernetes_public_ip_name}"
-  resource_group_name = "${data.azurerm_resource_group.aks_rg.name}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
 }
 
 # New infrastructure
