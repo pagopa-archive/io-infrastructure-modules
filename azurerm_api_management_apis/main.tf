@@ -21,11 +21,11 @@ resource "azurerm_api_management_api" "apim_apis" {
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 
-  display_name = "${lookup(var.apim_apis[count.index],"display_name","${lookup(var.apim_apis[count.index],"name")}")}"
-  description  = "${lookup(var.apim_apis[count.index],"description","---")}"
-  revision     = "${lookup(var.apim_apis[count.index],"revision","1")}"
-  path         = "${lookup(var.apim_apis[count.index],"path","api/v1")}"
-  protocols    = ["${split(",",lookup(var.apim_apis[count.index],"protocols","https"))}"]
+  display_name        = "${lookup(var.apim_apis[count.index],"display_name","${lookup(var.apim_apis[count.index],"name")}")}"
+  description         = "${lookup(var.apim_apis[count.index],"description","---")}"
+  revision            = "${lookup(var.apim_apis[count.index],"revision","1")}"
+  path                = "${lookup(var.apim_apis[count.index],"path","api/v1")}"
+  protocols           = ["${split(",",lookup(var.apim_apis[count.index],"protocols","https"))}"]
 
   import {
     content_format = "swagger-json"
@@ -37,7 +37,7 @@ data "template_file" "api_defs" {
   count    = "${length(var.apim_apis)}"
   template = "${file("${lookup(var.apim_apis[count.index],"name")}/swagger.json")}"
 
-  vars = {
+  vars     = {
     display_name = "${lookup(var.apim_apis[count.index],"display_name","${lookup(var.apim_apis[count.index],"name")}")}"
     description  = "${lookup(var.apim_apis[count.index],"description","---")}"
     host         = "${lookup(var.apim_apis[count.index],"host","api.example.com")}"
@@ -51,7 +51,11 @@ resource "azurerm_api_management_api_policy" "apim_api_policies" {
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
 
-  xml_content = "${file("${lookup(var.apim_apis[count.index],"name")}/${lookup(var.apim_apis[count.index],"xml_filename","default.xml")}")}"
+  xml_content         = "${file("${lookup(var.apim_apis[count.index],"name")}/${lookup(var.apim_apis[count.index],"xml_filename","default.xml")}")}"
+
+  depends_on          = [
+    "azurerm_api_management_api.apim_apis"
+  ]
 }
 
 resource "azurerm_api_management_api_operation" "apim_api_operations" {

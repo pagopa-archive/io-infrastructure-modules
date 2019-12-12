@@ -43,6 +43,10 @@ resource "azurerm_api_management_product_group" "product_groups" {
   group_name          = "${lookup(var.apim_products[count.index],"admin_group","administrators")}"
   api_management_name = "${basename(data.azurerm_api_management.api_management.id)}"
   resource_group_name = "${data.azurerm_resource_group.rg.name}"
+
+  depends_on          = [
+    "azurerm_api_management_product.products"
+  ]
 }
 
 resource "azurerm_api_management_product_policy" "product_policies" {
