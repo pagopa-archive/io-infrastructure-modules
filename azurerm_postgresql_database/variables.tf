@@ -16,7 +16,7 @@ variable "azurerm_postgresql_db_name" {
 
 variable "azurerm_postgresql_db_collation" {
   description = "PostgreSQL default database collation (ie. English_United States.1252)"
-  default = "und-x-icu"
+  default = "English_United States.1252"
 }
 
 locals {
