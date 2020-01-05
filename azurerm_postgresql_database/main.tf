@@ -4,7 +4,6 @@ data "azurerm_resource_group" "rg" {
 
 data "azurerm_postgresql_server" "postgresql_server" {
   name                  = "${local.azurerm_postgresql_server_name}"
-  location              = "${data.azurerm_resource_group.rg.location}"
   resource_group_name   = "${data.azurerm_resource_group.rg.name}"
 }
 
