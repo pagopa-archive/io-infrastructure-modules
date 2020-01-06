@@ -40,6 +40,16 @@ variable "kubernetes_cname_records" {
   description = "The list of DNS CNAME records. Keys must include name, record (both string values)."
 }
 
+variable "onboarding_cname_records" {
+  type        = "list"
+  description = "The list of DNS CNAME records for the onboarding CDN resources custom domains."
+}
+
+variable "onboarding_cname_records_targets" {
+  type        = "list"
+  description = "The list of DNS CNAME records targets for the onboarding CDN resources custom domains."
+}
+
 locals {
   kubernetes_public_ip_name                  = "${var.resource_name_prefix}-${var.environment}-pip-${var.kubernetes_public_ip_name}"
   private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${var.dns_zone_suffix}"
