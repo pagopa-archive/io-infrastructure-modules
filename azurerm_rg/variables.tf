@@ -18,6 +18,5 @@ variable "resource_name_suffix" {
 locals {
   # Define resource names based on the following convention:
   # {azurerm_resource_name_prefix}-RESOURCE_TYPE-{environment}
-  #azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}-rg"
   azurerm_resource_group_name = "${var.resource_name_prefix}-${var.environment}${var.resource_name_suffix != "" ? "-${var.resource_name_suffix}-" : "-"}rg"
 }
