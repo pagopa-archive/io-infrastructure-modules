@@ -43,16 +43,6 @@ data "null_data_source" "app_service_settings_secrets" {
     value = "${element(data.azurerm_key_vault_secret.app_service_settings_secrets.*.value, count.index)}"
   }
 }
-
-// Parameters from live
-data "null_data_source" "app_service_settings" {
-    count = "${length(var.app_service_settings)}"
-
-    inputs = {
-        key   = "${lookup(var.app_service_settings[count.index],"name")}"
-        value = "${lookup(var.app_service_settings[count.index],"value")}"
-    }
-}
 resource "azurerm_app_service" "app_service" {
     count               = "${1 - var.ip_restriction}"
     name                = "${local.azurerm_app_name}"
@@ -65,7 +55,7 @@ resource "azurerm_app_service" "app_service" {
         app_command_line = ""
     }
 
-    app_settings = "${merge(local.app_settings_map, local.app_settings_secret_map)}"
+    app_settings = "${merge(var.app_service_settings, local.app_settings_secret_map)}"
 
     lifecycle {
         ignore_changes = [
@@ -73,7 +63,6 @@ resource "azurerm_app_service" "app_service" {
         ]
     } 
 }
-
 resource "azurerm_app_service" "app_service_restriction" {
     count               = "${var.ip_restriction}"
     name                = "${local.azurerm_app_name}"
@@ -90,7 +79,7 @@ resource "azurerm_app_service" "app_service_restriction" {
         }
     }
 
-    app_settings = "${merge(local.app_settings_map, local.app_settings_secret_map)}"
+    app_settings = "${merge(var.app_service_settings, local.app_settings_secret_map)}"
 
     lifecycle {
         ignore_changes = [

@@ -79,20 +79,11 @@ variable "subnet_name" {
 }
 variable "app_service_settings" {
   description = "The list of parameter used by app_service."
-  default     = []
+  default     = {}
 }
 variable "app_service_settings_secrets" {
   description = "The list of parameter that are stored on keyvault."
   default     = []
-}
-variable "app_service_settings_default" {
-  description = "description"
-  default = [
-    {
-      name        = "APPINSIGHTS_INSTRUMENTATIONKEY"
-      vault_alias = "APPINSIGHTS_INSTRUMENTATIONKEY"
-    }
-  ]
 }
 
 locals {
@@ -107,8 +98,7 @@ locals {
   azurerm_virtual_network_name         = "${var.resource_name_prefix}-${var.environment}-vnet-${var.vnet_name}"
   azurerm_subnet_name                  = "${var.resource_name_prefix}-${var.environment}-subnet-${var.subnet_name}"
   azurerm_key_vault_name               = "${var.resource_name_prefix}-${var.environment}-keyvault"
-  app_settings_map                     = "${zipmap(data.null_data_source.app_service_settings.*.outputs.key,data.null_data_source.app_service_settings.*.outputs.value)}"
-  app_settings_secret_map              = "${zipmap(data.null_data_source.app_service_settings_secrets.*.outputs.key,data.null_data_source.app_service_settings_secrets.*.outputs.value )}"
+  app_settings_secret_map              = "${zipmap(data.null_data_source.app_service_settings_secrets.*.outputs.key, data.null_data_source.app_service_settings_secrets.*.outputs.value)}"
 
   app_settings_default_secret          = [
     {
@@ -116,7 +106,6 @@ locals {
       vault_alias = "${var.resource_name_prefix}-${var.environment}-${local.azurerm_app_name}-appinsights-instrumentationkey"
     }
   ]
-
   app_settings_default                 = [
     {
       name  = "DOCKER_REGISTRY_SERVER_USERNAME"
