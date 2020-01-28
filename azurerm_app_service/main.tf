@@ -13,12 +13,12 @@ data "azurerm_monitor_diagnostic_categories" "diag" {
     resource_id = "${azurerm_app_service.app_service.id}"
 }
 data "azurerm_virtual_network" "vnet" {
-    count               = "${var.ip_restriction}"
+    count               = "${var.enable_vnet}"
     name                = "${local.azurerm_virtual_network_name}"
     resource_group_name = "${local.azurerm_resource_group_name_main}"
 }
 data "azurerm_subnet" "subnet" {
-    count                = "${var.ip_restriction}"  
+    count                = "${var.enable_vnet}"  
     name                 = "${local.azurerm_subnet_name}"
     virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
     resource_group_name  = "${local.azurerm_resource_group_name_main}"
@@ -44,7 +44,7 @@ data "null_data_source" "app_service_settings_secrets" {
   }
 }
 resource "azurerm_app_service" "app_service" {
-    count               = "${1 - var.ip_restriction}"
+    count               = "${1 - var.enable_vnet}"
     name                = "${local.azurerm_app_name}"
     resource_group_name = "${data.azurerm_resource_group.rg.name}"
     location            = "${data.azurerm_resource_group.rg.location}"
@@ -64,7 +64,7 @@ resource "azurerm_app_service" "app_service" {
     } 
 }
 resource "azurerm_app_service" "app_service_restriction" {
-    count               = "${var.ip_restriction}"
+    count               = "${var.enable_vnet}"
     name                = "${local.azurerm_app_name}"
     resource_group_name = "${data.azurerm_resource_group.rg.name}"
     location            = "${data.azurerm_resource_group.rg.location}"
@@ -89,7 +89,7 @@ resource "azurerm_app_service" "app_service_restriction" {
 }
 // Add Azure Monitor Diagnostic
 resource "azurerm_monitor_diagnostic_setting" "diag" {
-  count                      = "${1 - var.ip_restriction}"
+  count                      = "${1 - var.enable_vnet}"
   name                       = "${local.azurerm_app_service_diagnostic_name}"
   target_resource_id         = "${azurerm_app_service.app_service.id}"
   log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.log_analytics_workspace.id}"
@@ -149,7 +149,7 @@ resource "azurerm_monitor_diagnostic_setting" "diag" {
   }
 }
 resource "azurerm_monitor_diagnostic_setting" "diag_restriction" {
-  count                      = "${var.ip_restriction}"
+  count                      = "${var.enable_vnet}"
   name                       = "${local.azurerm_app_service_diagnostic_name}"
   target_resource_id         = "${azurerm_app_service.app_service_restriction.id}"
   log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.log_analytics_workspace.id}"
