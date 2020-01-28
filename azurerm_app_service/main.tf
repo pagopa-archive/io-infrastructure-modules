@@ -23,6 +23,36 @@ data "azurerm_subnet" "subnet" {
     virtual_network_name = "${data.azurerm_virtual_network.vnet.name}"
     resource_group_name  = "${local.azurerm_resource_group_name_main}"
 }
+data "azurerm_key_vault" "key_vault" {
+  name                = "${local.azurerm_key_vault_name}"
+  resource_group_name = "${local.azurerm_resource_group_name_main}"
+}
+
+// Secrets from live
+data "azurerm_key_vault_secret" "app_service_settings_secrets" {
+  count        = "${length(var.app_service_settings_secrets)}"
+  name         = "${lookup(var.app_service_settings_secrets[count.index],"vault_alias")}"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+data "null_data_source" "app_service_settings_secrets" {
+  count = "${length(var.app_service_settings_secrets)}"
+
+  inputs = {
+    key   = "${lookup(var.app_service_settings_secrets[count.index],"name")}"
+    value = "${element(data.azurerm_key_vault_secret.app_service_settings_secrets.*.value, count.index)}"
+  }
+}
+
+// Parameters from live
+data "null_data_source" "app_service_settings" {
+    count = "${length(var.app_service_settings)}"
+
+    inputs = {
+        key   = "${lookup(var.app_service_settings[count.index],"name")}"
+        value = "${lookup(var.app_service_settings[count.index],"value")}"
+    }
+}
 resource "azurerm_app_service" "app_service" {
     count               = "${1 - var.ip_restriction}"
     name                = "${local.azurerm_app_name}"
@@ -35,12 +65,7 @@ resource "azurerm_app_service" "app_service" {
         app_command_line = ""
     }
 
-    app_settings {
-        DOCKER_REGISTRY_SERVER_USERNAME     = "${var.docker_registry_server_username}"
-        DOCKER_REGISTRY_SERVER_URL          = "${var.docker_registry_server_url}"
-        DOCKER_REGISTRY_SERVER_PASSWORD     = "${var.docker_registry_server_password}"
-        WEBSITES_ENABLE_APP_SERVICE_STORAGE = "${var.websites_enable_app_service_storage}" 
-    }
+    app_settings = "${merge(local.app_settings_map, local.app_settings_secret_map)}"
 
     lifecycle {
         ignore_changes = [
@@ -56,21 +81,16 @@ resource "azurerm_app_service" "app_service_restriction" {
     location            = "${data.azurerm_resource_group.rg.location}"
     app_service_plan_id = "${data.azurerm_app_service_plan.plan.id}"
 
-    site_config {
+    site_config = {
         linux_fx_version = "${var.docker_image}"
         app_command_line = ""
 
-        ip_restriction {
+        ip_restriction = {
             virtual_network_subnet_id = "${data.azurerm_subnet.subnet.id}"
         }
     }
 
-    app_settings {
-        DOCKER_REGISTRY_SERVER_USERNAME     = "${var.docker_registry_server_username}"
-        DOCKER_REGISTRY_SERVER_URL          = "${var.docker_registry_server_url}"
-        DOCKER_REGISTRY_SERVER_PASSWORD     = "${var.docker_registry_server_password}"
-        WEBSITES_ENABLE_APP_SERVICE_STORAGE = "${var.websites_enable_app_service_storage}" 
-    }
+    app_settings = "${merge(local.app_settings_map, local.app_settings_secret_map)}"
 
     lifecycle {
         ignore_changes = [
@@ -139,7 +159,6 @@ resource "azurerm_monitor_diagnostic_setting" "diag" {
     }
   }
 }
-
 resource "azurerm_monitor_diagnostic_setting" "diag_restriction" {
   count                      = "${var.ip_restriction}"
   name                       = "${local.azurerm_app_service_diagnostic_name}"
