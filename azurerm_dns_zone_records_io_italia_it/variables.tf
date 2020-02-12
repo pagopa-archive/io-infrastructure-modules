@@ -76,16 +76,6 @@ variable "mailup_cname_records" {
   type        = "list"
 }
 
-variable "onboarding_cname_records" {
-  type        = "list"
-  description = "The list of DNS CNAME records for the onboarding CDN resources custom domains."
-}
-
-variable "onboarding_cname_records_targets" {
-  type        = "list"
-  description = "The list of DNS CNAME records targets for the onboarding CDN resources custom domains."
-}
-
 locals {
   private_prefix_environment_dns_zone_suffix = "${var.dns_zone_prefix}.${var.dns_zone_suffix}"
   azurerm_dns_zone_name                      = "${var.dns_zone_prefix != "" ? local.private_prefix_environment_dns_zone_suffix : var.dns_zone_suffix}"
