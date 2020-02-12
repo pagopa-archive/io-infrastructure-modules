@@ -193,3 +193,16 @@ resource "azurerm_dns_cname_record" "mailup_cname_records" {
 }
 
 # Mailup configuration end
+
+# Onboarding
+
+resource "azurerm_dns_cname_record" "onboarding_cname_records" {
+  count               = "${length(var.onboarding_cname_records)}"
+  name                = "${var.onboarding_cname_records[count.index]}"
+  resource_group_name = "${data.azurerm_resource_group.rg.name}"
+  zone_name           = "${data.azurerm_dns_zone.dns_zone.name}"
+  ttl                 = "${var.dns_record_ttl}"
+  record              = "${var.onboarding_cname_records_targets[count.index]}"
+}
+
+# Onboarding configuration end
