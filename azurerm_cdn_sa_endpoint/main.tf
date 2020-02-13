@@ -19,11 +19,15 @@ resource "azurerm_cdn_endpoint" "cdn_endpoint" {
 
   querystring_caching_behaviour = "${var.azurerm_cdn_endpoint_querystring_caching_behaviour}"
 
-  origin_host_header            = "${data.azurerm_storage_account.sa.primary_web_host}"
+  origin_host_header            = "${data.azurerm_storage_account.sa.primary_web_host != "" ? 
+                                     data.azurerm_storage_account.sa.primary_web_host : 
+                                     data.azurerm_storage_account.sa.primary_blob_host}"
 
   origin {
     name      = "${local.azurerm_storage_account_name}"
-    host_name = "${data.azurerm_storage_account.sa.primary_web_host}"
+    host_name = "${data.azurerm_storage_account.sa.primary_web_host != "" ? 
+                   data.azurerm_storage_account.sa.primary_web_host : 
+                   data.azurerm_storage_account.sa.primary_blob_host}"
   }
 
   tags = {

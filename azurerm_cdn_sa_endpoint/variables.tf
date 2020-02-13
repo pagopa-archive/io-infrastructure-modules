@@ -22,7 +22,7 @@ variable "azurerm_cdn_endpoint_is_https_allowed" {
 
 variable "azurerm_cdn_endpoint_querystring_caching_behaviour" { 
   description = "One between IgnoreQueryString, BypassCaching and UseQueryString."
-  default = "BypassCaching"
+  default = "IgnoreQueryString"
 }
 
 variable "origin_storage_account_suffix" {
